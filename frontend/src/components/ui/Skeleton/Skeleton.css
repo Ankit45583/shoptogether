@@ -1,0 +1,172 @@
+
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03) 0%,
+      rgba(255,255,255,0.08) 50%,
+      rgba(255,255,255,0.03) 100%
+    );
+
+  background-size: 300% 100%;
+
+  border-radius: 12px;
+
+  animation:
+    skeleton-shimmer 1.6s linear infinite;
+}
+
+/* ==========================================
+   SHIMMER EFFECT
+========================================== */
+
+@keyframes skeleton-shimmer {
+
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ==========================================
+   COMMON SKELETON TYPES
+========================================== */
+
+.skeleton-text {
+  height: 14px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.skeleton-text:last-child {
+  width: 70%;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 50%;
+  margin-bottom: 16px;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.skeleton-button {
+  width: 120px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+}
+
+.skeleton-product-image {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 18px;
+}
+
+/* ==========================================
+   CARD SKELETON
+========================================== */
+
+.skeleton-card {
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,0.02);
+
+  border:
+    1px solid rgba(255,255,255,0.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ==========================================
+   USER CARD SKELETON
+========================================== */
+
+.skeleton-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.skeleton-user-content {
+  flex: 1;
+}
+
+/* ==========================================
+   PRODUCT CARD SKELETON
+========================================== */
+
+.skeleton-product {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ==========================================
+   TABLE ROW SKELETON
+========================================== */
+
+.skeleton-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.skeleton-cell {
+  flex: 1;
+  height: 18px;
+}
+
+/* ==========================================
+   MOBILE OPTIMIZATION
+========================================== */
+
+@media (max-width: 768px) {
+
+  .skeleton-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .skeleton-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .skeleton-button {
+    width: 100px;
+    height: 40px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION SUPPORT
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .skeleton {
+    animation: none;
+  }
+}

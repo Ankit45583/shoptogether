@@ -1,0 +1,244 @@
+/* ==========================================
+   CARD COMPONENT
+========================================== */
+
+.card {
+  position: relative;
+
+  background: var(--bg-secondary, #111827);
+
+  border: 1px solid
+    var(--border-color, rgba(255,255,255,0.08));
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+}
+
+/* Subtle Gradient Glow */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(139, 92, 246, 0.08),
+      transparent 40%
+    );
+
+  pointer-events: none;
+}
+
+/* ==========================================
+   HOVERABLE CARD
+========================================== */
+
+.card-hoverable {
+  cursor: pointer;
+}
+
+.card-hoverable:hover {
+  transform: translateY(-6px);
+
+  border-color: rgba(139, 92, 246, 0.4);
+
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(139, 92, 246, 0.15);
+}
+
+/* ==========================================
+   ACTIVE STATE
+========================================== */
+
+.card-hoverable:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================
+   GLASS CARD
+========================================== */
+
+.card-glass {
+  backdrop-filter: blur(20px);
+
+  background:
+    rgba(255,255,255,0.04);
+
+  border:
+    1px solid rgba(255,255,255,0.1);
+}
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+
+  margin: 0;
+}
+
+.card-subtitle {
+  margin-top: 6px;
+
+  color: var(--text-secondary, #9ca3af);
+
+  font-size: 0.9rem;
+}
+
+/* ==========================================
+   CARD BODY
+========================================== */
+
+.card-body {
+  color: var(--text-secondary, #d1d5db);
+  line-height: 1.7;
+}
+
+/* ==========================================
+   CARD FOOTER
+========================================== */
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+/* ==========================================
+   FEATURE CARD
+========================================== */
+
+.card-feature {
+  text-align: center;
+}
+
+.card-feature .icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 16px;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139,92,246,0.2),
+      rgba(124,58,237,0.15)
+    );
+
+  color: #8b5cf6;
+}
+
+/* ==========================================
+   PRODUCT CARD
+========================================== */
+
+.card-product {
+  padding: 0;
+}
+
+.card-product img {
+  width: 100%;
+  aspect-ratio: 1/1;
+
+  object-fit: cover;
+
+  border-radius: 20px 20px 0 0;
+}
+
+.card-product-content {
+  padding: 18px;
+}
+
+/* ==========================================
+   STATS CARD
+========================================== */
+
+.card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-stats-value {
+  font-size: 2rem;
+  font-weight: 700;
+
+  color: var(--text-primary);
+}
+
+.card-stats-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ==========================================
+   MOBILE OPTIMIZATION
+========================================== */
+
+@media (max-width: 768px) {
+
+  .card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .card-hoverable:hover {
+    transform: translateY(-3px);
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-stats-value {
+    font-size: 1.6rem;
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES
+========================================== */
+
+@media (max-width: 480px) {
+
+  .card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

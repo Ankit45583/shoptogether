@@ -1,0 +1,150 @@
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: var(--space-4) 0;
+  transition:
+    background var(--transition-slow),
+    border-color var(--transition-slow),
+    box-shadow var(--transition-slow);
+}
+
+.landing-nav.scrolled {
+  background: rgba(10, 10, 15, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: 60px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex: 1;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: var(--space-2);
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: var(--space-3) 0;
+  }
+
+  .landing-nav-inner {
+    padding: 0 var(--space-4);
+    min-height: 56px;
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    z-index: 99;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    font-size: var(--text-base);
+    padding: var(--space-2) 0;
+  }
+
+  .nav-actions {
+    display: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .landing-nav-inner {
+    padding: 0 16px;
+  }
+
+  .nav-links {
+    top: 56px;
+    padding: 20px 16px;
+    gap: 16px;
+    max-height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+
+  .nav-link {
+    font-size: 15px;
+  }
+
+  .nav-hamburger {
+    padding: 4px;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 360px) {
+  .landing-nav-inner {
+    padding: 0 12px;
+  }
+
+  .nav-links {
+    padding: 16px 12px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
+}

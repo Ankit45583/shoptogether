@@ -1,0 +1,513 @@
+/* ==========================================
+   CREATE ROOM PAGE
+========================================== */
+
+.create-room-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateX(-2px);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.create-room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================
+   CARD
+========================================== */
+
+.form-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  backdrop-filter: blur(16px);
+  transition: border-color 0.25s ease;
+}
+
+.form-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.form-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-section-title-icon {
+  color: var(--accent-purple);
+}
+
+/* ==========================================
+   FORM GROUP
+========================================== */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-label-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.form-input,
+.form-select,
+.textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.25s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+}
+
+.form-input::placeholder,
+.textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   ROOM TYPE SELECTOR
+========================================== */
+
+.type-toggle {
+  display: flex;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  gap: 4px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.type-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.type-btn.active {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-purple);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+/* ==========================================
+   TOGGLE ROW
+========================================== */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.toggle-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.toggle-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.toggle-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ==========================================
+   PREMIUM TOGGLE
+========================================== */
+
+.toggle {
+  width: 44px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.25s ease;
+}
+
+.toggle.on {
+  background: var(--accent-purple);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s ease;
+}
+
+.toggle.on .toggle-thumb {
+  transform: translateX(20px);
+}
+
+/* ==========================================
+   SUBMIT ACTIONS
+========================================== */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.form-actions .btn {
+  min-width: 140px;
+}
+
+/* ==========================================
+   SUCCESS SCREEN
+========================================== */
+
+.create-room-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  padding: 64px 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  animation: fadeIn 0.4s ease;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.12);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: #22c55e;
+  animation: float 3s ease-in-out infinite;
+}
+
+.create-room-success h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.success-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   ROOM CODE
+========================================== */
+
+.room-code-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px 28px;
+  border-radius: 16px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 2px dashed rgba(139, 92, 246, 0.3);
+  margin: 8px 0;
+}
+
+.room-code-text {
+  font-size: 2.25rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  color: var(--accent-purple);
+  margin: 0;
+}
+
+.copy-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--accent-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.copy-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  transform: scale(1.05);
+}
+
+.copy-btn.copied {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+/* ==========================================
+   ACTIONS
+========================================== */
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.success-actions .btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* ==========================================
+   ANIMATIONS
+========================================== */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 1024px) {
+  .create-room-page {
+    padding: 24px 20px;
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+  .create-room-page {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .form-card {
+    padding: 20px;
+  }
+
+  .room-code-text {
+    font-size: 1.75rem;
+    letter-spacing: 0.15em;
+  }
+
+  .create-room-success {
+    padding: 48px 20px;
+  }
+
+  .create-room-success h2 {
+    font-size: 1.5rem;
+  }
+
+  .success-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .success-actions .btn {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+  .room-code-display {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .room-code-text {
+    font-size: 1.5rem;
+    letter-spacing: 0.2em;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .form-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}

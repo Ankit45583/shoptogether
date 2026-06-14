@@ -1,0 +1,146 @@
+/* ==========================================
+   RESPONSIVE UTILITIES
+========================================== */
+
+/* Tablet */
+
+@media (max-width: 1024px) {
+
+  :root {
+
+    /* Sidebar */
+
+    --sidebar-width: 220px;
+
+    /* Container */
+
+    --container-padding: 20px;
+  }
+
+  .hide-tablet {
+    display: none !important;
+  }
+
+  .show-tablet {
+    display: flex !important;
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  :root {
+
+    /* Typography */
+
+    --text-5xl: 2.5rem;
+    --text-4xl: 2rem;
+    --text-3xl: 1.75rem;
+    --text-2xl: 1.5rem;
+    --text-xl: 1.25rem;
+
+    /* Layout */
+
+    --sidebar-width: 0px;
+    --container-padding: 16px;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: flex !important;
+  }
+
+  .mobile-full {
+    width: 100% !important;
+  }
+
+  .mobile-column {
+    flex-direction: column !important;
+  }
+
+  .mobile-center {
+    text-align: center !important;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+
+  :root {
+
+    --text-5xl: 2rem;
+    --text-4xl: 1.75rem;
+    --text-3xl: 1.5rem;
+    --text-2xl: 1.25rem;
+  }
+
+  .hide-small-mobile {
+    display: none !important;
+  }
+
+  .show-small-mobile {
+    display: flex !important;
+  }
+}
+
+/* ==========================================
+   DESKTOP
+========================================== */
+
+@media (min-width: 769px) {
+
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+
+  .show-tablet {
+    display: none !important;
+  }
+}
+
+/* ==========================================
+   LARGE DESKTOP
+========================================== */
+
+@media (min-width: 1440px) {
+
+  :root {
+
+    --container-max-width: 1400px;
+  }
+}
+
+/* ==========================================
+   COMMON RESPONSIVE HELPERS
+========================================== */
+
+.hide {
+  display: none !important;
+}
+
+.show {
+  display: block !important;
+}
+
+.w-mobile-full {
+  width: auto;
+}
+
+@media (max-width: 768px) {
+
+  .w-mobile-full {
+    width: 100% !important;
+  }
+}

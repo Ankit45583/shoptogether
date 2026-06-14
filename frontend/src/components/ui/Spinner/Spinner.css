@@ -1,0 +1,176 @@
+/* ==========================================
+   SPINNER
+========================================== */
+
+.spinner {
+  display: inline-block;
+
+  border-radius: 50%;
+
+  border-style: solid;
+  border-color:
+    rgba(255,255,255,0.12);
+
+  border-top-color:
+    var(--accent-purple, #8b5cf6);
+
+  animation:
+    spinner-rotate 0.8s linear infinite;
+
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   SIZES
+========================================== */
+
+.spinner-xs {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+
+.spinner-sm {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.spinner-md {
+  width: 26px;
+  height: 26px;
+  border-width: 3px;
+}
+
+.spinner-lg {
+  width: 42px;
+  height: 42px;
+  border-width: 4px;
+}
+
+.spinner-xl {
+  width: 60px;
+  height: 60px;
+  border-width: 5px;
+}
+
+/* ==========================================
+   GLOW EFFECT
+========================================== */
+
+.spinner-glow {
+  box-shadow:
+    0 0 12px rgba(139,92,246,0.3);
+}
+
+/* ==========================================
+   COLOR VARIANTS
+========================================== */
+
+.spinner-success {
+  border-top-color: #22c55e;
+}
+
+.spinner-danger {
+  border-top-color: #ef4444;
+}
+
+.spinner-warning {
+  border-top-color: #f59e0b;
+}
+
+.spinner-info {
+  border-top-color: #3b82f6;
+}
+
+/* ==========================================
+   CENTER LOADER
+========================================== */
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  padding: 24px;
+}
+
+/* ==========================================
+   FULL PAGE LOADER
+========================================== */
+
+.spinner-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+  gap: 16px;
+}
+
+.spinner-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   BUTTON SPINNER
+========================================== */
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+
+  border-color:
+    rgba(255,255,255,0.3);
+
+  border-top-color:
+    #ffffff;
+}
+
+/* ==========================================
+   ANIMATION
+========================================== */
+
+@keyframes spinner-rotate {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .spinner {
+    animation-duration: 2s;
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  .spinner-lg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .spinner-xl {
+    width: 52px;
+    height: 52px;
+  }
+}

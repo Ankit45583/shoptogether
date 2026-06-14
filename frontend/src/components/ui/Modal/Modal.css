@@ -1,0 +1,276 @@
+/* ==========================================
+   MODAL OVERLAY
+========================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    rgba(0, 0, 0, 0.75);
+
+  backdrop-filter: blur(10px);
+
+  z-index: 9999;
+
+  animation: fadeIn 0.25s ease;
+}
+
+/* ==========================================
+   MODAL CARD
+========================================== */
+
+.modal-card {
+  position: relative;
+
+  width: 100%;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.45);
+
+  animation: modalOpen 0.3s ease;
+}
+
+/* ==========================================
+   SIZES
+========================================== */
+
+.modal-sm {
+  max-width: 400px;
+}
+
+.modal-md {
+  max-width: 550px;
+}
+
+.modal-lg {
+  max-width: 750px;
+}
+
+.modal-xl {
+  max-width: 1000px;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 24px 28px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.08);
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  color: var(--text-primary);
+
+  margin: 0;
+}
+
+/* ==========================================
+   CLOSE BUTTON
+========================================== */
+
+.modal-close {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255,255,255,0.04);
+
+  color: var(--text-muted);
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.modal-close:hover {
+  background:
+    rgba(255,255,255,0.08);
+
+  color: var(--text-primary);
+
+  transform: rotate(90deg);
+}
+
+/* ==========================================
+   BODY
+========================================== */
+
+.modal-body {
+  padding: 24px 28px;
+
+  color: var(--text-secondary);
+
+  line-height: 1.7;
+
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  padding: 20px 28px;
+
+  border-top:
+    1px solid rgba(255,255,255,0.08);
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background:
+    rgba(255,255,255,0.15);
+
+  border-radius: 999px;
+}
+
+/* ==========================================
+   ANIMATIONS
+========================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform:
+      translateY(20px)
+      scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+
+    border-radius:
+      24px 24px 0 0;
+
+    animation:
+      mobileModalOpen 0.3s ease;
+  }
+
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-body {
+    padding: 20px;
+    max-height: 75vh;
+  }
+
+  .modal-footer {
+    padding: 20px;
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}
+
+@keyframes mobileModalOpen {
+
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES
+========================================== */
+
+@media (max-width: 480px) {
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 16px;
+  }
+}

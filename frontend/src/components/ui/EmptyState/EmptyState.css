@@ -1,0 +1,209 @@
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 320px;
+
+  padding: 48px 24px;
+
+  text-align: center;
+  gap: 16px;
+
+  border: 1px dashed
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.01)
+    );
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Glow */
+.empty-state::before {
+  content: "";
+  position: absolute;
+  width: 250px;
+  height: 250px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(139,92,246,0.12),
+      transparent 70%
+    );
+
+  top: -80px;
+  right: -80px;
+
+  pointer-events: none;
+}
+
+/* ==========================================
+   ICON
+========================================== */
+
+.empty-state-icon {
+  width: 90px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 42px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139,92,246,0.15),
+      rgba(124,58,237,0.08)
+    );
+
+  color: #8b5cf6;
+
+  border: 1px solid
+    rgba(139,92,246,0.15);
+
+  box-shadow:
+    0 10px 30px rgba(139,92,246,0.15);
+}
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+
+  margin: 0;
+}
+
+/* ==========================================
+   DESCRIPTION
+========================================== */
+
+.empty-state-desc {
+  max-width: 420px;
+
+  font-size: 0.95rem;
+  line-height: 1.7;
+
+  color: var(--text-secondary);
+
+  margin: 0;
+}
+
+/* ==========================================
+   ACTION BUTTON AREA
+========================================== */
+
+.empty-state-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  margin-top: 12px;
+
+  flex-wrap: wrap;
+}
+
+/* ==========================================
+   ANIMATION
+========================================== */
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.empty-state-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  .empty-state {
+    min-height: 260px;
+    padding: 32px 18px;
+  }
+
+  .empty-state-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 34px;
+  }
+
+  .empty-state-title {
+    font-size: 1.1rem;
+  }
+
+  .empty-state-desc {
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
+
+  .empty-state-actions {
+    width: 100%;
+  }
+
+  .empty-state-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES
+========================================== */
+
+@media (max-width: 480px) {
+
+  .empty-state {
+    min-height: 220px;
+    border-radius: 18px;
+  }
+
+  .empty-state-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 30px;
+  }
+
+  .empty-state-title {
+    font-size: 1rem;
+  }
+
+  .empty-state-desc {
+    font-size: 0.85rem;
+  }
+}

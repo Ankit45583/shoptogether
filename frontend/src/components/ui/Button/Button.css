@@ -1,0 +1,283 @@
+/* ==========================================
+   BUTTON COMPONENT
+========================================== */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: var(--font-family, Inter, sans-serif);
+  font-weight: 600;
+  line-height: 1;
+
+  border-radius: 12px;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Hover Effect */
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+/* Click Effect */
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Focus Ring */
+.btn:focus-visible {
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.25);
+}
+
+/* Disabled */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==========================================
+   BUTTON SIZES
+========================================== */
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.btn-md {
+  min-height: 44px;
+  padding: 0 18px;
+  font-size: 15px;
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+/* Full Width */
+.btn-full {
+  width: 100%;
+}
+
+/* ==========================================
+   PRIMARY BUTTON
+========================================== */
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    #8b5cf6,
+    #7c3aed
+  );
+
+  color: #fff;
+
+  box-shadow:
+    0 8px 24px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow:
+    0 12px 30px rgba(139, 92, 246, 0.4);
+}
+
+/* ==========================================
+   SECONDARY BUTTON
+========================================== */
+
+.btn-secondary {
+  background: var(--bg-secondary, #1f2937);
+  color: var(--text-primary, #fff);
+
+  border: 1px solid
+    var(--border-color, #374151);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-hover, #2d3748);
+  border-color: #8b5cf6;
+}
+
+/* ==========================================
+   OUTLINE BUTTON
+========================================== */
+
+.btn-outline {
+  background: transparent;
+  color: #8b5cf6;
+
+  border: 1px solid #8b5cf6;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+/* ==========================================
+   GHOST BUTTON
+========================================== */
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary, #9ca3af);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary, #fff);
+}
+
+/* ==========================================
+   DANGER BUTTON
+========================================== */
+
+.btn-danger {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover:not(:disabled) {
+  box-shadow:
+    0 12px 28px rgba(239, 68, 68, 0.4);
+}
+
+/* ==========================================
+   SUCCESS BUTTON
+========================================== */
+
+.btn-success {
+  background: linear-gradient(
+    135deg,
+    #22c55e,
+    #16a34a
+  );
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px rgba(34, 197, 94, 0.3);
+}
+
+.btn-success:hover:not(:disabled) {
+  box-shadow:
+    0 12px 28px rgba(34, 197, 94, 0.4);
+}
+
+/* ==========================================
+   ICON BUTTON
+========================================== */
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  border-radius: 12px;
+}
+
+/* ==========================================
+   LOADING STATE
+========================================== */
+
+.btn-loading {
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   MOBILE OPTIMIZATION
+========================================== */
+
+@media (max-width: 768px) {
+
+  .btn {
+    width: auto;
+    touch-action: manipulation;
+  }
+
+  .btn-md {
+    min-height: 48px;
+    padding: 0 18px;
+    font-size: 15px;
+  }
+
+  .btn-lg {
+    min-height: 54px;
+    padding: 0 22px;
+    font-size: 16px;
+  }
+
+  .btn-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES
+========================================== */
+
+@media (max-width: 480px) {
+
+  .btn-full-mobile {
+    width: 100%;
+  }
+
+  .btn {
+    border-radius: 14px;
+  }
+
+  .btn-lg {
+    width: 100%;
+  }
+}

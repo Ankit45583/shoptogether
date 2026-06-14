@@ -1,0 +1,358 @@
+/* ==========================================
+   GOOGLE FONT
+========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@import './variables.css';
+@import './animations.css';
+
+/* ==========================================
+   RESET
+========================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+#root {
+  min-height: 100vh;
+}
+
+/* ==========================================
+   ROOT
+========================================== */
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+
+  font-family: var(--font-family, 'Inter', sans-serif);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--bg-primary),
+      #0f172a
+    );
+
+  color: var(--text-primary);
+
+  line-height: 1.6;
+
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  overflow-x: hidden;
+}
+
+/* ==========================================
+   SELECTION
+========================================== */
+
+::selection {
+  background:
+    rgba(139,92,246,0.3);
+
+  color:
+    var(--text-primary);
+}
+
+/* ==========================================
+   LINKS
+========================================== */
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+a:hover {
+  opacity: 0.9;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ==========================================
+   FORM ELEMENTS
+========================================== */
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+
+  color: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* ==========================================
+   IMAGES
+========================================== */
+
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* ==========================================
+   TYPOGRAPHY
+========================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   LISTS
+========================================== */
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ==========================================
+   TABLES
+========================================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ==========================================
+   FOCUS STATES
+========================================== */
+
+:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 3px;
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background:
+    rgba(255,255,255,0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background:
+    rgba(255,255,255,0.12);
+
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(255,255,255,0.2);
+}
+
+/* Firefox */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(255,255,255,0.15)
+    transparent;
+}
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+
+  margin-inline: auto;
+
+  padding-inline: 24px;
+}
+
+/* ==========================================
+   COMMON UTILITIES
+========================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+/* ==========================================
+   LOADING CURSOR
+========================================== */
+
+.loading {
+  cursor: wait;
+}
+
+/* ==========================================
+   APP ROOT
+========================================== */
+
+#root {
+  min-height: 100vh;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  html {
+    font-size: 15px;
+  }
+
+  .container {
+    padding-inline: 16px;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding-inline: 12px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
+}
+/* ==========================================
+   ROOM PAGE - BODY LOCK
+========================================== */
+
+/* ==========================================
+   ROOM PAGE - FORCE FULL HEIGHT
+========================================== */
+
+/* ==========================================
+   ROOM PAGE - FORCE FULL HEIGHT
+========================================== */
+
+html.room-page-open {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+html.room-page-open body {
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+  background: var(--bg-primary) !important;
+}
+
+html.room-page-open #root {
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+  display: flex !important;
+}
+
+html.room-page-open #root > * {
+  height: 100% !important;
+  width: 100% !important;
+}

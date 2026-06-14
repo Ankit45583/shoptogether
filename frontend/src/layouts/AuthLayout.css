@@ -1,0 +1,267 @@
+/* ==========================================
+   AUTH LAYOUT
+========================================== */
+
+.auth-layout {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #09090b 0%,
+      #111827 100%
+    );
+}
+
+/* ==========================================
+   BACKGROUND GLOW 1
+========================================== */
+
+.auth-layout::before {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(139,92,246,0.18),
+      transparent 70%
+    );
+
+  top: -150px;
+  left: -150px;
+
+  pointer-events: none;
+
+  animation: floatGlow 8s ease-in-out infinite;
+}
+
+/* ==========================================
+   BACKGROUND GLOW 2
+========================================== */
+
+.auth-layout::after {
+  content: "";
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(236,72,153,0.12),
+      transparent 70%
+    );
+
+  right: -150px;
+  bottom: -150px;
+
+  pointer-events: none;
+
+  animation: floatGlow 10s ease-in-out infinite;
+}
+
+/* ==========================================
+   AUTH CONTAINER
+========================================== */
+
+.auth-container {
+  width: 100%;
+  max-width: 460px;
+
+  position: relative;
+  z-index: 2;
+}
+
+/* ==========================================
+   AUTH CARD
+========================================== */
+
+.auth-card {
+  background:
+    rgba(255,255,255,0.04);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-radius: 28px;
+
+  padding: 36px;
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.45);
+}
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.auth-logo {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8b5cf6,
+      #7c3aed
+    );
+
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+
+  box-shadow:
+    0 12px 30px rgba(139,92,246,0.4);
+}
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.auth-title {
+  text-align: center;
+
+  font-size: 2rem;
+  font-weight: 700;
+
+  color: white;
+
+  margin-bottom: 10px;
+}
+
+/* ==========================================
+   SUBTITLE
+========================================== */
+
+.auth-subtitle {
+  text-align: center;
+
+  color: #9ca3af;
+
+  font-size: 0.95rem;
+
+  margin-bottom: 30px;
+
+  line-height: 1.6;
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.auth-footer {
+  margin-top: 24px;
+
+  text-align: center;
+
+  color: #9ca3af;
+
+  font-size: 14px;
+}
+
+.auth-footer a {
+  color: #8b5cf6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================
+   FLOAT ANIMATION
+========================================== */
+
+@keyframes floatGlow {
+
+  0% {
+    transform:
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      translateY(-20px);
+  }
+
+  100% {
+    transform:
+      translateY(0px);
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+
+  .auth-layout {
+    padding: 16px;
+  }
+
+  .auth-card {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .auth-title {
+    font-size: 1.6rem;
+  }
+
+  .auth-logo {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES
+========================================== */
+
+@media (max-width: 480px) {
+
+  .auth-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .auth-title {
+    font-size: 1.4rem;
+  }
+
+  .auth-subtitle {
+    font-size: 0.9rem;
+  }
+}

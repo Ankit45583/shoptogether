@@ -1,0 +1,440 @@
+/* ==========================================
+   PROFILE PAGE
+========================================== */
+
+.profile-page {
+  max-width: 1000px;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+/* ==========================================
+   PROFILE HEADER
+========================================== */
+
+.profile-header-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+
+  padding: 32px;
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  backdrop-filter: blur(16px);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  overflow: hidden;
+}
+
+.profile-header-card::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(139,92,246,0.12),
+      transparent 40%
+    );
+
+  pointer-events: none;
+}
+
+/* ==========================================
+   AVATAR
+========================================== */
+
+.profile-avatar-wrap {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border:
+    4px solid rgba(139,92,246,0.25);
+}
+
+.profile-edit-avatar {
+  position: absolute;
+
+  bottom: 6px;
+  right: 6px;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background:
+    var(--gradient-primary);
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 20px rgba(139,92,246,0.3);
+}
+
+/* ==========================================
+   INFO
+========================================== */
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.profile-username {
+  margin-top: 4px;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+}
+
+.profile-bio {
+  margin-top: 12px;
+
+  max-width: 600px;
+
+  line-height: 1.6;
+
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+.profile-stats-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 16px;
+}
+
+.profile-stat-card {
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
+}
+
+.profile-stat-card:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    rgba(139,92,246,0.25);
+}
+
+.profile-stat-icon {
+  color: var(--accent-purple);
+
+  margin-bottom: 10px;
+}
+
+.profile-stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.profile-stat-label {
+  font-size: 12px;
+
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   TABS
+========================================== */
+
+.profile-tabs {
+  display: flex;
+
+  gap: 8px;
+
+  padding-bottom: 8px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.08);
+}
+
+.profile-tab {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.profile-tab:hover {
+  background:
+    rgba(255,255,255,0.04);
+
+  color: var(--text-primary);
+}
+
+.profile-tab.active {
+  background:
+    rgba(139,92,246,0.12);
+
+  color:
+    var(--accent-purple);
+}
+
+/* ==========================================
+   HISTORY
+========================================== */
+
+.rooms-history-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.history-room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 18px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
+}
+
+.history-room-item:hover {
+  border-color:
+    rgba(139,92,246,0.25);
+
+  transform: translateY(-2px);
+}
+
+.history-room-name {
+  font-weight: 700;
+}
+
+.history-room-meta {
+  margin-top: 4px;
+
+  font-size: 12px;
+
+  color: var(--text-muted);
+}
+
+/* ==========================================
+   SAVED PRODUCTS
+========================================== */
+
+.saved-products-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 18px;
+}
+
+.saved-product-card {
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
+}
+
+.saved-product-card:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    rgba(139,92,246,0.25);
+}
+
+.saved-product-img {
+  height: 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255,255,255,0.04);
+}
+
+.saved-product-info {
+  padding: 14px;
+}
+
+.saved-product-name {
+  display: block;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.saved-product-price {
+  display: block;
+
+  margin-top: 6px;
+
+  color:
+    var(--accent-purple);
+
+  font-weight: 700;
+}
+
+/* ==========================================
+   ACTIVITY
+========================================== */
+
+.profile-activity-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.profile-activity-item {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  transition: all 0.25s ease;
+}
+
+.profile-activity-item:hover {
+  background:
+    rgba(255,255,255,0.04);
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1024px) {
+
+  .profile-stats-row {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .saved-products-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media (max-width: 768px) {
+
+  .profile-page {
+    padding: 16px;
+  }
+
+  .profile-header-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-name {
+    font-size: 1.6rem;
+  }
+
+  .profile-tabs {
+    overflow-x: auto;
+  }
+
+  .history-room-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .profile-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-avatar {
+    width: 90px;
+    height: 90px;
+  }
+}

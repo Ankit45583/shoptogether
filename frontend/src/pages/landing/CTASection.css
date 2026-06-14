@@ -1,0 +1,305 @@
+/* ==========================================
+   CTA SECTION
+========================================== */
+
+.cta-section {
+  padding: 100px 24px;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+/* ==========================================
+   CTA CARD
+========================================== */
+
+.cta-card {
+  position: relative;
+
+  max-width: 1000px;
+
+  margin: 0 auto;
+
+  padding: 80px 40px;
+
+  border-radius: 32px;
+
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 24px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139,92,246,0.12),
+      rgba(236,72,153,0.08)
+    );
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(139,92,246,0.18);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.25);
+}
+
+/* ==========================================
+   GLOW EFFECTS
+========================================== */
+
+.cta-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  top: -200px;
+  right: -150px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(139,92,246,0.25),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+.cta-card::after {
+  content: "";
+
+  position: absolute;
+
+  width: 350px;
+  height: 350px;
+
+  bottom: -180px;
+  left: -120px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(236,72,153,0.18),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.cta-title {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 700px;
+
+  font-size: clamp(2.5rem, 5vw, 4rem);
+
+  font-weight: 800;
+
+  line-height: 1.15;
+
+  letter-spacing: -0.03em;
+}
+
+/* ==========================================
+   SUBTITLE
+========================================== */
+
+.cta-subtitle {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 650px;
+
+  font-size: 1.15rem;
+
+  line-height: 1.8;
+
+  color:
+    var(--text-secondary);
+}
+
+/* ==========================================
+   CTA BUTTONS
+========================================== */
+
+.cta-actions {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  flex-wrap: wrap;
+
+  margin-top: 10px;
+}
+
+.cta-actions .btn {
+  min-width: 180px;
+}
+
+/* ==========================================
+   USERS BADGE
+========================================== */
+
+.cta-users {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 10px;
+}
+
+.cta-avatars {
+  display: flex;
+}
+
+.cta-avatar {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  border: 2px solid var(--bg-primary);
+
+  margin-left: -10px;
+}
+
+.cta-avatar:first-child {
+  margin-left: 0;
+}
+
+.cta-users-text {
+  font-size: 14px;
+
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   NOTE
+========================================== */
+
+.cta-note {
+  position: relative;
+
+  z-index: 2;
+
+  font-size: 13px;
+
+  color:
+    var(--text-muted);
+
+  margin-top: 8px;
+}
+
+/* ==========================================
+   TRUST BADGES
+========================================== */
+
+.cta-trust {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 16px;
+}
+
+.cta-trust-item {
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.05);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  font-size: 13px;
+
+  color:
+    var(--text-secondary);
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 768px) {
+
+  .cta-section {
+    padding: 80px 16px;
+  }
+
+  .cta-card {
+    padding: 60px 24px;
+  }
+
+  .cta-title {
+    font-size: 2.2rem;
+  }
+
+  .cta-subtitle {
+    font-size: 1rem;
+  }
+
+  .cta-actions {
+    width: 100%;
+  }
+
+  .cta-actions .btn {
+    width: 100%;
+  }
+
+  .cta-users {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .cta-title {
+    font-size: 1.8rem;
+  }
+
+  .cta-card {
+    border-radius: 24px;
+  }
+}
