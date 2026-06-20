@@ -1,28 +1,49 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-const useAuthStore = create((set) => ({
-  user: JSON.parse(localStorage.getItem("user")) || null,
-  isAuthenticated: !!localStorage.getItem("user"),
-  isLoading: false,
+const useAuthStore = create(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: false,
 
-  login: (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", userData.token || "mock-token");
-    set({ user: userData, isAuthenticated: true });
-  },
+      // Set user after login/register
+      setAuth: (user, token) => {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+        });
+      },
 
-  logout: () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    set({ user: null, isAuthenticated: false });
-  },
+      // Update user data
+      setUser: (user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        set({ user });
+      },
 
-  setUser: (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ user });
-  },
+      // Clear everything on logout
+      logout: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+        });
+      },
 
-  setLoading: (isLoading) => set({ isLoading }),
-}));
+      // Loading state
+      setLoading: (isLoading) => set({ isLoading }),
+    }),
+    {
+      name: "auth-storage",
+    }
+  )
+);
 
 export default useAuthStore;

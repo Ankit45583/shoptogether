@@ -1,160 +1,137 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineArrowLeft, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 import toast from "react-hot-toast";
 import Button from "../../components/ui/Button/Button";
 import Badge from "../../components/ui/Badge/Badge";
-import { MOCK_ROOMS, CATEGORIES } from "../../config/constants";
-import { sleep } from "../../lib/utils";
+import { joinRoom, getPublicRooms } from "../../api/room.api";
 import "./JoinRoomPage.css";
 
 function JoinRoomPage() {
   const navigate = useNavigate();
-  const [code, setCode] = useState(Array(6).fill(""));
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const inputRefs = useRef([]);
+  const [publicRooms, setPublicRooms] = useState([]);
+  const [loadingRooms, setLoadingRooms] = useState(true);
 
-  // Handle code box input
-  const handleCodeInput = (i, val) => {
-    const char = val.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(-1);
-    const next = [...code];
-    next[i] = char;
-    setCode(next);
-    if (char && i < 5) inputRefs.current[i + 1]?.focus();
-  };
+  /* ==========================================
+     LOAD PUBLIC ROOMS
+  ========================================== */
 
-  const handleCodeKeyDown = (i, e) => {
-    if (e.key === "Backspace" && !code[i] && i > 0) {
-      inputRefs.current[i - 1]?.focus();
+  useEffect(() => {
+    loadPublicRooms();
+  }, []);
+
+  const loadPublicRooms = async () => {
+    setLoadingRooms(true);
+    try {
+      const response = await getPublicRooms(1, 20);
+      setPublicRooms(response.data.rooms || []);
+    } catch (error) {
+      toast.error("Failed to load public rooms");
+    } finally {
+      setLoadingRooms(false);
     }
   };
 
-  const handleCodePaste = (e) => {
-    const pasted = e.clipboardData.getData("text").replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 6);
-    const next = Array(6).fill("");
-    pasted.split("").forEach((c, i) => { next[i] = c; });
-    setCode(next);
-    inputRefs.current[Math.min(pasted.length, 5)]?.focus();
-    e.preventDefault();
-  };
+  /* ==========================================
+     JOIN ROOM HANDLER
+  ========================================== */
 
-  const handleJoinByCode = async () => {
-    const fullCode = code.join("");
-    if (fullCode.length < 6) { toast.error("Enter full 6-character code"); return; }
+  const handleJoin = async (roomCode) => {
+    const finalCode = roomCode || code;
+
+    if (!finalCode || finalCode.length !== 6) {
+      toast.error("Please enter a valid 6-character code");
+      return;
+    }
 
     setLoading(true);
-    await sleep(700);
-    setLoading(false);
 
-    const room = MOCK_ROOMS.find((r) => r.code === fullCode);
-    if (room) {
-      toast.success(`Joining "${room.name}"!`);
-      navigate(`/rooms/${room.id}`);
-    } else {
-      toast.error("Room not found. Check the code and try again.");
+    try {
+      const response = await joinRoom(finalCode.toUpperCase());
+      const room = response.data.room;
+
+      toast.success(`Joined "${room.name}"!`);
+      navigate(`/rooms/${room._id}`);
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || "Failed to join room";
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const publicRooms = MOCK_ROOMS.filter((r) => {
-    const matchSearch = r.name.toLowerCase().includes(search.toLowerCase()) || r.host.toLowerCase().includes(search.toLowerCase());
-    const matchCat = activeCategory === "All" || r.category === activeCategory;
-    return r.type === "public" && matchSearch && matchCat;
-  });
 
   return (
     <div className="join-room-page">
       <div className="page-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          <AiOutlineArrowLeft size={20} /> Back
+          <AiOutlineArrowLeft size={18} />
+          Back
         </button>
-        <h1 className="page-title">Join a Room</h1>
+        <div>
+          <h1 className="page-title">Join a Room</h1>
+          <p className="page-subtitle">
+            Enter a room code or browse public rooms
+          </p>
+        </div>
       </div>
 
       {/* Join by Code */}
-      <div className="join-card">
-        <h3 className="join-card-title">Enter Room Code</h3>
-        <p className="join-card-sub">Ask your friend for the 6-character room code</p>
-        <div className="code-inputs" onPaste={handleCodePaste}>
-          {code.map((c, i) => (
-            <input
-              key={i}
-              ref={(el) => (inputRefs.current[i] = el)}
-              className="code-box"
-              value={c}
-              maxLength={1}
-              onChange={(e) => handleCodeInput(i, e.target.value)}
-              onKeyDown={(e) => handleCodeKeyDown(i, e)}
-            />
-          ))}
+      <div className="join-section">
+        <h3 className="section-title">Join by Code</h3>
+        <div className="join-code-form">
+          <input
+            type="text"
+            className="join-code-input"
+            placeholder="ABC123"
+            maxLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+          />
+          <Button
+            variant="primary"
+            size="lg"
+            loading={loading}
+            onClick={() => handleJoin()}
+          >
+            Join Room
+          </Button>
         </div>
-        <Button variant="primary" size="lg" fullWidth loading={loading} onClick={handleJoinByCode}>
-          Join Room
-        </Button>
       </div>
 
-      {/* Browse Public Rooms */}
-      <div className="browse-section">
-        <h3 className="section-heading">Browse Public Rooms</h3>
+      {/* Public Rooms */}
+      <div className="join-section">
+        <h3 className="section-title">Browse Public Rooms</h3>
 
-        <div className="browse-controls">
-          <div className="browse-search">
-            <AiOutlineSearch className="search-icon" size={16} />
-            <input
-              className="browse-search-input"
-              placeholder="Search rooms or hosts..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="filter-chips">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              className={`filter-chip ${activeCategory === cat ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="public-rooms-list">
-          {publicRooms.length === 0 ? (
-            <div className="empty-browse">
-              <p>😕 No rooms found. Try a different filter.</p>
-            </div>
-          ) : (
-            publicRooms.map((room) => (
-              <div key={room.id} className="public-room-card">
+        {loadingRooms ? (
+          <p className="loading-text">Loading rooms...</p>
+        ) : publicRooms.length === 0 ? (
+          <p className="empty-text">No public rooms available</p>
+        ) : (
+          <div className="public-rooms-list">
+            {publicRooms.map((room) => (
+              <div key={room._id} className="public-room-card">
                 <div className="public-room-info">
-                  <div className="public-room-top">
-                    <h4 className="public-room-name">{room.name}</h4>
-                    <Badge variant="purple">{room.category}</Badge>
-                  </div>
-                  <p className="public-room-meta">
-                    Hosted by <strong>{room.host}</strong> · {room.members}/{room.maxMembers} members
+                  <h4>{room.name}</h4>
+                  <p>
+                    Hosted by {room.host?.name} · {room.members?.length || 0}/
+                    {room.maxMembers} members
                   </p>
-                  <p className="public-room-code">Code: <span>{room.code}</span></p>
+                  <Badge variant="purple">{room.category}</Badge>
                 </div>
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={async () => {
-                    toast.success(`Joining "${room.name}"!`);
-                    await sleep(400);
-                    navigate(`/rooms/${room.id}`);
-                  }}
+                  onClick={() => handleJoin(room.code)}
                 >
                   Join
                 </Button>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

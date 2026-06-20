@@ -1,120 +1,151 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AiOutlineMail, AiOutlineLock } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
+import { motion } from "framer-motion";
+import {
+  AiOutlineMail,
+  AiOutlineLock,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
 import toast from "react-hot-toast";
-import Logo from "../../components/common/Logo/Logo";
 import Button from "../../components/ui/Button/Button";
 import Input from "../../components/ui/Input/Input";
 import useAuthStore from "../../store/auth.store";
-import { sleep } from "../../lib/utils";
+import { loginUser } from "../../api/auth.api";
 import "./LoginPage.css";
 
 function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "", remember: false });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuthStore();
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
 
-  const validate = () => {
-    const e = {};
-    if (!form.email) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Enter a valid email";
-    if (!form.password) e.password = "Password is required";
-    else if (form.password.length < 6) e.password = "Minimum 6 characters";
-    return e;
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  /* ==========================================
+     LOGIN HANDLER — Real Backend Connect
+  ========================================== */
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const e2 = validate();
-    if (Object.keys(e2).length) { setErrors(e2); return; }
+
+    // Validation
+    if (!form.email || !form.password) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
     setLoading(true);
+
     try {
-      await sleep(700);
-      // Mock login — any email/password works
-      login({
-        id: "1",
-        name: "Arjun Sharma",
-        username: "arjun_s",
-        email: form.email,
-        avatar: "",
-        bio: "Fashion lover from Mumbai",
-        token: "mock-jwt-token",
-      });
-      toast.success("Welcome back! 👋");
+      // ✅ Backend API call
+      const response = await loginUser(form);
+
+      const { user, accessToken } = response.data;
+
+      // Save to store
+      setAuth(user, accessToken);
+
+      toast.success(`Welcome back, ${user.name}! 👋`);
+
+      // Redirect to dashboard
       navigate("/dashboard");
-    } catch {
-      toast.error("Login failed. Try again.");
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || "Login failed. Try again.";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  const set = (key) => (e) => {
-    setForm((p) => ({ ...p, [key]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
-    setErrors((p) => ({ ...p, [key]: "" }));
-  };
-
   return (
-    <div className="auth-card">
-      <div className="auth-card-logo">
-        <Logo size="md" />
-      </div>
-      <h1 className="auth-title">Welcome back</h1>
-      <p className="auth-subtitle">Sign in to your account</p>
-
-      <form onSubmit={handleSubmit} className="auth-form" noValidate>
-        <Input
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          icon={<AiOutlineMail size={16} />}
-          value={form.email}
-          onChange={set("email")}
-          error={errors.email}
-        />
-        <Input
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          icon={<AiOutlineLock size={16} />}
-          value={form.password}
-          onChange={set("password")}
-          error={errors.password}
-        />
-
-        <div className="auth-row">
-          <label className="auth-checkbox">
-            <input type="checkbox" checked={form.remember} onChange={set("remember")} />
-            Remember me
-          </label>
-          <a href="#" className="auth-link">Forgot password?</a>
+    <motion.div
+      className="login-page"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="auth-card">
+        <div className="auth-header">
+          <h1 className="auth-title">Welcome back</h1>
+          <p className="auth-subtitle">Sign in to continue shopping together</p>
         </div>
 
-        <Button type="submit" variant="primary" fullWidth loading={loading}>
-          Sign In
-        </Button>
+        <form className="auth-form" onSubmit={handleLogin}>
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="your@email.com"
+            value={form.email}
+            onChange={handleChange}
+            icon={<AiOutlineMail size={18} />}
+          />
 
-        <div className="auth-divider"><span>or</span></div>
+          <Input
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            value={form.password}
+            onChange={handleChange}
+            icon={<AiOutlineLock size={18} />}
+            rightIcon={
+              <button
+                type="button"
+                className="input-eye"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={18} />
+                ) : (
+                  <AiOutlineEye size={18} />
+                )}
+              </button>
+            }
+          />
 
-        <Button
-          type="button"
-          variant="outline"
-          fullWidth
-          leftIcon={<FcGoogle size={18} />}
-          onClick={() => toast("Google login coming soon!")}
-        >
-          Continue with Google
-        </Button>
-      </form>
+          <div className="auth-row">
+            <label className="auth-checkbox">
+              <input type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <Link to="/forgot-password" className="auth-link">
+              Forgot password?
+            </Link>
+          </div>
 
-      <p className="auth-footer-text">
-        Don't have an account?{" "}
-        <Link to="/register" className="auth-link">Sign up</Link>
-      </p>
-    </div>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </Button>
+        </form>
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <p className="auth-footer">
+          Don't have an account?{" "}
+          <Link to="/register" className="auth-link">
+            Sign up
+          </Link>
+        </p>
+      </div>
+    </motion.div>
   );
 }
 

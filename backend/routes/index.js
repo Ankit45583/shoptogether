@@ -14,7 +14,7 @@ const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 router.use("/rooms", roomRoutes);
-router.use("/messages", messageRoutes);
+router.use("/rooms", messageRoutes);
 router.use("/products", productRoutes);
 router.use("/votes", voteRoutes);
 router.use("/cart", cartRoutes);

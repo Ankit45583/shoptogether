@@ -7,12 +7,11 @@ import {
   AiOutlineTeam,
   AiOutlineSetting,
 } from "react-icons/ai";
-import { HiOutlineSparkles } from "react-icons/hi";
 import toast from "react-hot-toast";
 import Button from "../../components/ui/Button/Button";
-import Input from "../../components/ui/Input/Input";
 import useRoomStore from "../../store/room.store";
-import { generateRoomCode, copyToClipboard, sleep } from "../../lib/utils";
+import { createRoom } from "../../api/room.api";
+import { copyToClipboard } from "../../lib/utils";
 import "./CreateRoomPage.css";
 
 const categories = ["Fashion", "Electronics", "Beauty", "Home", "Sports", "Books"];
@@ -32,7 +31,6 @@ function Toggle({ label, description, checked, onChange }) {
         type="button"
         className={`toggle ${checked ? "on" : ""}`}
         onClick={() => onChange(!checked)}
-        aria-label={label}
       >
         <span className="toggle-thumb" />
       </button>
@@ -71,7 +69,7 @@ function CreateRoomPage() {
     }));
 
   /* ==========================================
-     SUBMIT HANDLER
+     CREATE ROOM — Real Backend Connect
   ========================================== */
 
   const handleCreate = async (e) => {
@@ -87,38 +85,39 @@ function CreateRoomPage() {
       return;
     }
 
-    if (form.maxMembers < 2 || form.maxMembers > 50) {
-      toast.error("Members must be between 2 and 50");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      await sleep(700);
-
-      const room = {
-        ...form,
-        id: Date.now().toString(),
-        code: generateRoomCode(),
-        members: 1,
-        status: "active",
-        host: "You",
+      // Backend expected format
+      const roomData = {
+        name: form.name,
+        description: form.description,
+        category: form.category,
+        type: form.type,
+        maxMembers: Number(form.maxMembers),
+        settings: {
+          allowChat: form.allowChat,
+          allowVoting: form.allowVoting,
+          allowProductShare: form.allowSharing,
+          aiHostEnabled: form.aiHost,
+        },
       };
+
+      // ✅ Backend API call
+      const response = await createRoom(roomData);
+      const room = response.data.room;
 
       addRoom(room);
       setCreated(room);
       toast.success("Room created successfully!");
-    } catch {
-      toast.error("Failed to create room");
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || "Failed to create room";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
-
-  /* ==========================================
-     COPY HANDLER
-  ========================================== */
 
   const handleCopy = async () => {
     await copyToClipboard(created.code);
@@ -142,7 +141,7 @@ function CreateRoomPage() {
           <div>
             <h2>Room Created!</h2>
             <p className="success-subtitle">
-              Share this code with your friends to invite them to your shopping room
+              Share this code with your friends to invite them
             </p>
           </div>
 
@@ -151,7 +150,6 @@ function CreateRoomPage() {
             <button
               className={`copy-btn ${copied ? "copied" : ""}`}
               onClick={handleCopy}
-              aria-label="Copy room code"
             >
               {copied ? <AiOutlineCheck size={18} /> : <AiOutlineCopy size={18} />}
             </button>
@@ -170,7 +168,7 @@ function CreateRoomPage() {
             <Button
               variant="primary"
               size="lg"
-              onClick={() => navigate(`/rooms/${created.id}`)}
+              onClick={() => navigate(`/rooms/${created._id || created.id}`)}
             >
               Enter Room
             </Button>
@@ -186,8 +184,6 @@ function CreateRoomPage() {
 
   return (
     <div className="create-room-page">
-      
-      {/* Header */}
       <div className="page-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <AiOutlineArrowLeft size={18} />
@@ -196,15 +192,13 @@ function CreateRoomPage() {
         <div>
           <h1 className="page-title">Create Shopping Room</h1>
           <p className="page-subtitle">
-            Set up a new room and invite your friends to shop together
+            Set up a new room and invite your friends
           </p>
         </div>
       </div>
 
-      {/* Form */}
       <form className="create-room-form" onSubmit={handleCreate}>
-        
-        {/* Room Details Card */}
+        {/* Room Details */}
         <div className="form-card">
           <h3 className="form-section-title">
             <AiOutlineTeam className="form-section-title-icon" size={20} />
@@ -249,9 +243,7 @@ function CreateRoomPage() {
               onChange={set("category")}
             >
               {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
+                <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
@@ -279,7 +271,7 @@ function CreateRoomPage() {
           <div className="form-group">
             <label className="form-label">
               Max Members
-              <span className="form-label-hint">2-50 members</span>
+              <span className="form-label-hint">2-50</span>
             </label>
             <input
               className="form-input"
@@ -292,7 +284,7 @@ function CreateRoomPage() {
           </div>
         </div>
 
-        {/* Room Settings Card */}
+        {/* Settings */}
         <div className="form-card">
           <h3 className="form-section-title">
             <AiOutlineSetting className="form-section-title-icon" size={20} />
@@ -301,34 +293,30 @@ function CreateRoomPage() {
 
           <Toggle
             label="Allow Chat"
-            description="Members can send messages in the room"
+            description="Members can send messages"
             checked={form.allowChat}
             onChange={set("allowChat")}
           />
-
           <Toggle
             label="Allow Voting"
-            description="Members can vote on shared products"
+            description="Members can vote on products"
             checked={form.allowVoting}
             onChange={set("allowVoting")}
           />
-
           <Toggle
             label="Allow Product Sharing"
-            description="Members can share products to the room"
+            description="Members can share products"
             checked={form.allowSharing}
             onChange={set("allowSharing")}
           />
-
           <Toggle
             label="Enable AI Host"
-            description="Get smart recommendations powered by AI"
+            description="Get smart recommendations"
             checked={form.aiHost}
             onChange={set("aiHost")}
           />
         </div>
 
-        {/* Submit Actions */}
         <div className="form-actions">
           <Button
             type="button"

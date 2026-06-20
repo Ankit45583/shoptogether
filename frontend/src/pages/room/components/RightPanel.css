@@ -1,93 +1,69 @@
 /* ==========================================
-   RIGHT PANEL
+   RIGHT PANEL — MAIN CONTAINER
 ========================================== */
 
 .right-panel {
-  width: 320px;
-  flex-shrink: 0;
-  height: 100vh;         /* ✅ */
-  max-height: 100vh;     /* ✅ */
   display: flex;
   flex-direction: column;
+  height: 100%;
+  max-height: 100%;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
+
 /* ==========================================
    TABS
 ========================================== */
 
 .right-panel-tabs {
   display: flex;
-
   padding: 6px;
-
   gap: 4px;
-
-  border-bottom:
-    1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .right-tab {
   flex: 1;
-
   height: 42px;
-
   border: none;
-
   border-radius: 12px;
-
   background: transparent;
-
   color: var(--text-muted);
-
   font-size: 12px;
   font-weight: 600;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   gap: 6px;
-
+  cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .right-tab:hover {
   color: var(--text-primary);
-
-  background:
-    rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .right-tab.active {
-  background:
-    rgba(139,92,246,0.12);
-
-  color:
-    var(--accent-purple);
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--accent-purple);
 }
 
 /* ==========================================
-   BADGE
+   TAB BADGE
 ========================================== */
 
 .tab-badge {
   min-width: 18px;
   height: 18px;
-
   border-radius: 999px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background:
-    var(--accent-purple);
-
+  background: var(--accent-purple);
   color: white;
-
   font-size: 10px;
   font-weight: 700;
 }
@@ -103,15 +79,11 @@
 
 .tab-content {
   height: 100%;
-
   overflow-y: auto;
-
   padding: 16px;
-
   display: flex;
   flex-direction: column;
-
-  gap: 16px;
+  gap: 12px;
 }
 
 /* ==========================================
@@ -119,219 +91,293 @@
 ========================================== */
 
 .tab-section-title {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-
-  color: var(--text-muted);
-
-  letter-spacing: .08em;
-
-  text-transform: uppercase;
+  margin: 0;
+  color: var(--text-primary);
 }
 
 /* ==========================================
-   MINI CHIPS
+   MINI CHIPS (Category filter)
 ========================================== */
 
 .mini-chips {
   display: flex;
+  gap: 6px;
   flex-wrap: wrap;
-
-  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .mini-chip {
   padding: 6px 12px;
-
   border-radius: 999px;
-
-  background:
-    rgba(255,255,255,0.04);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  color:
-    var(--text-secondary);
-
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
   font-size: 11px;
-
-  transition: all 0.25s ease;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.mini-chip:hover,
+.mini-chip:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  color: var(--accent-purple);
+}
+
 .mini-chip.active {
-  border-color:
-    rgba(139,92,246,0.25);
-
-  background:
-    rgba(139,92,246,0.1);
-
-  color:
-    var(--accent-purple);
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
 }
 
 /* ==========================================
-   PRODUCTS
+   PRODUCT CARDS (Products tab)
 ========================================== */
 
 .products-list {
   display: flex;
   flex-direction: column;
-
-  gap: 10px;
+  gap: 8px;
 }
 
 .room-product-card {
   display: flex;
   align-items: center;
-
-  gap: 12px;
-
-  padding: 12px;
-
-  border-radius: 16px;
-
-  background:
-    rgba(255,255,255,0.04);
-
-  border:
-    1px solid rgba(255,255,255,0.06);
-
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.25s ease;
 }
 
 .room-product-card:hover {
-  transform: translateY(-2px);
-
-  border-color:
-    rgba(139,92,246,0.2);
+  border-color: rgba(139, 92, 246, 0.25);
+  background: rgba(255, 255, 255, 0.06);
 }
+
+/* ==========================================
+   PRODUCT IMAGE
+========================================== */
 
 .rp-img {
-  width: 52px;
-  height: 52px;
-
-  border-radius: 12px;
-
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   flex-shrink: 0;
-
   overflow: hidden;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
+
+.rp-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rp-img.sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* ==========================================
+   PRODUCT INFO
+========================================== */
 
 .rp-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .rp-name {
-  display: block;
-
   font-size: 13px;
   font-weight: 600;
-
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .rp-price {
-  color: var(--accent-purple);
-
   font-size: 12px;
   font-weight: 700;
-
-  margin-top: 4px;
+  color: var(--accent-purple);
 }
 
 /* ==========================================
-   PRODUCT ACTIONS
+   PRODUCT ACTION BUTTONS
 ========================================== */
 
 .rp-actions {
   display: flex;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .rp-btn {
-  width: 30px;
-  height: 30px;
-
-  border-radius: 10px;
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  background:
-    rgba(255,255,255,0.04);
-
-  color:
-    var(--text-secondary);
-
-  transition: all 0.25s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .rp-btn:hover {
-  border-color:
-    rgba(139,92,246,0.25);
+  transform: translateY(-1px);
+}
 
-  color:
-    var(--accent-purple);
+.rp-btn.share:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #3b82f6;
+}
+
+.rp-btn.add:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: var(--accent-purple);
+}
+
+.rp-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+  transform: none;
 }
 
 /* ==========================================
-   VOTING
+   VOTING TAB — HEADER
+========================================== */
+
+.vote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* ==========================================
+   VOTING LIST
 ========================================== */
 
 .voting-list {
   display: flex;
   flex-direction: column;
-
-  gap: 14px;
+  gap: 12px;
 }
 
 .vote-item {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.25s ease;
+}
 
-  gap: 8px;
+.vote-item:hover {
+  border-color: rgba(139, 92, 246, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.vote-item-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .vote-item-name {
   font-size: 13px;
   font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================
+   ADD-TO-CART BUTTON IN VOTING
+========================================== */
+
+.vote-add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: var(--accent-purple);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.vote-add-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+
+.vote-add-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* ==========================================
+   VOTE PROGRESS BAR
+========================================== */
+
+.vote-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .vote-bar-bg {
-  height: 8px;
-
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-
   overflow: hidden;
-
-  background:
-    rgba(255,255,255,0.08);
 }
 
 .vote-bar-fill {
   height: 100%;
-
-  border-radius: inherit;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--accent-purple),
-      var(--accent-pink)
-    );
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border-radius: 999px;
+  transition: width 0.5s ease;
 }
 
 .vote-pct {
-  color: var(--accent-purple);
-
   font-size: 11px;
   font-weight: 700;
+  color: var(--accent-purple);
+  min-width: 35px;
+  text-align: right;
 }
+
+/* ==========================================
+   VOTE BUTTONS
+========================================== */
 
 .vote-btns {
   display: flex;
@@ -340,164 +386,272 @@
 
 .vote-btn {
   flex: 1;
-
-  height: 32px;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
   border-radius: 10px;
-
-  background:
-    rgba(255,255,255,0.04);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  font-size: 12px;
-
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.25s ease;
 }
 
+.vote-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* UPVOTE */
+.vote-btn.up {
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
 .vote-btn.up:hover {
-  border-color: var(--success);
-  color: var(--success);
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.vote-btn.up.active {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+  color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+/* DOWNVOTE */
+.vote-btn.down {
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
 }
 
 .vote-btn.down:hover {
-  border-color: var(--error);
-  color: var(--error);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.vote-btn.down.active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.vote-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ==========================================
-   AI CONSENSUS
+   EMPTY STATE (Voting / Cart)
 ========================================== */
 
-.ai-consensus-card {
-  padding: 14px;
-
-  border-radius: 16px;
-
-  background:
-    rgba(139,92,246,0.08);
-
-  border:
-    1px solid rgba(139,92,246,0.15);
-}
-
-.ai-consensus-header {
+.vote-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
   display: flex;
+  flex-direction: column;
   align-items: center;
-
-  gap: 8px;
-
-  margin-bottom: 8px;
-
-  color:
-    var(--accent-purple);
-
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.ai-consensus-text {
-  font-size: 12px;
-
-  color: var(--text-secondary);
-
-  line-height: 1.6;
 }
 
 /* ==========================================
    CART
 ========================================== */
 
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .cart-item {
   display: flex;
   align-items: center;
-
-  gap: 12px;
-
-  padding: 12px;
-
-  border-radius: 14px;
-
-  background:
-    rgba(255,255,255,0.04);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.cart-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cart-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price {
+  font-size: 12px;
+  color: var(--accent-purple);
+  font-weight: 700;
+}
+
+.cart-item-by {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.icon-btn.danger {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   CART SUMMARY
+========================================== */
+
 .cart-summary {
-  margin-top: auto;
-
-  padding: 16px;
-
-  border-radius: 18px;
-
-  background:
-    rgba(255,255,255,0.05);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .cart-summary-row {
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 8px;
-
   font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .cart-summary-row.total {
   font-size: 15px;
   font-weight: 700;
-
   color: var(--text-primary);
+  margin-bottom: 6px;
 }
 
 /* ==========================================
    AI ASSISTANT
 ========================================== */
 
-.ai-avatar {
-  width: 52px;
-  height: 52px;
-
-  border-radius: 50%;
-
-  background:
-    rgba(139,92,246,0.12);
-
-  border:
-    1px solid rgba(139,92,246,0.25);
-
-  color:
-    var(--accent-purple);
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
 }
+
+.ai-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: var(--accent-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ai-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.ai-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ==========================================
+   AI SUGGESTION CARDS
+========================================== */
 
 .ai-suggestion-card {
   display: flex;
-
   gap: 10px;
-
   padding: 12px;
-
   border-radius: 14px;
-
-  background:
-    rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .ai-pref-tag {
-  padding: 4px 10px;
-
+  padding: 3px 9px;
   border-radius: 999px;
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-purple);
+  font-size: 10px;
+  font-weight: 600;
+}
 
-  background:
-    rgba(139,92,246,0.1);
+/* ==========================================
+   AI CONSENSUS CARD (Summary etc.)
+========================================== */
 
-  color:
-    var(--accent-purple);
+.ai-consensus-card {
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
 
-  font-size: 11px;
+.ai-consensus-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--accent-purple);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ai-consensus-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================
+   COMMON: EMPTY MESSAGE
+========================================== */
+
+.rp-empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 20px;
+  font-size: 13px;
 }
 
 /* ==========================================
@@ -505,21 +659,18 @@
 ========================================== */
 
 @media (max-width: 1200px) {
-
   .right-panel {
     width: 280px;
   }
 }
 
 @media (max-width: 1024px) {
-
   .right-panel {
     width: 260px;
   }
 }
 
 @media (max-width: 768px) {
-
   .right-panel {
     display: none;
   }

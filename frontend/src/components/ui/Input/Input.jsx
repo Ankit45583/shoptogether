@@ -1,50 +1,43 @@
-import { useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import "./Input.css";
 
 function Input({
   label,
-  error,
-  icon,
+  name,
   type = "text",
+  placeholder,
+  value,
+  onChange,
+  icon,
+  rightIcon,
+  error,
+  disabled = false,
   className = "",
-  disabled,
-  ...props
+  ...rest
 }) {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
-
   return (
-    <div className="input-wrapper">
+    <div className={`input-wrapper ${className}`}>
       {label && <label className="input-label">{label}</label>}
-      <div className="input-field-wrap">
-        {icon && <span className="input-icon">{icon}</span>}
+
+      <div className={`input-field-wrapper ${error ? "has-error" : ""}`}>
+        {icon && <span className="input-icon-left">{icon}</span>}
+
         <input
-          type={inputType}
+          className={`input-field ${icon ? "has-left-icon" : ""} ${
+            rightIcon ? "has-right-icon" : ""
+          }`}
+          name={name}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           disabled={disabled}
-          className={[
-            "input-field",
-            icon ? "has-icon" : "",
-            type === "password" ? "has-right-icon" : "",
-            error ? "input-error" : "",
-            className,
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          {...props}
+          {...rest}
         />
-        {type === "password" && (
-          <button
-            type="button"
-            className="input-right-icon"
-            onClick={() => setShowPassword((p) => !p)}
-          >
-            {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
-          </button>
-        )}
+
+        {rightIcon && <span className="input-icon-right">{rightIcon}</span>}
       </div>
-      {error && <span className="input-error-text">{error}</span>}
+
+      {error && <span className="input-error">{error}</span>}
     </div>
   );
 }

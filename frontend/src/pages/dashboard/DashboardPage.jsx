@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  AiOutlineSearch, AiOutlineBell, AiOutlinePlus,
-} from "react-icons/ai";
+import { AiOutlineSearch, AiOutlineBell, AiOutlinePlus } from "react-icons/ai";
 import { BsDoorOpen, BsBagHeart, BsGraphUp, BsHandThumbsUp } from "react-icons/bs";
 import Avatar from "../../components/ui/Avatar/Avatar";
 import Badge from "../../components/ui/Badge/Badge";
@@ -12,6 +10,7 @@ import useAuthStore from "../../store/auth.store";
 import useRoomStore from "../../store/room.store";
 import { MOCK_PRODUCTS, MOCK_NOTIFICATIONS, CATEGORY_COLORS } from "../../config/constants";
 import { formatPrice } from "../../lib/utils";
+import { getMyRooms } from "../../api/room.api";
 import "./DashboardPage.css";
 
 const stats = [
@@ -31,9 +30,30 @@ const recentActivity = [
 
 function DashboardPage() {
   const { user } = useAuthStore();
-  const { myRooms } = useRoomStore();
+  const { myRooms, setMyRooms } = useRoomStore();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [loadingRooms, setLoadingRooms] = useState(true);
+
+  /* ==========================================
+     LOAD ROOMS FROM BACKEND — ONCE ONLY
+  ========================================== */
+
+  useEffect(() => {
+    const loadRooms = async () => {
+      try {
+        const response = await getMyRooms();
+        setMyRooms(response.data.rooms || []);
+      } catch (error) {
+        console.error("Failed to load rooms:", error);
+      } finally {
+        setLoadingRooms(false);
+      }
+    };
+
+    loadRooms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);   // ✅ EMPTY ARRAY — important!
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
@@ -44,7 +64,9 @@ function DashboardPage() {
       {/* Top bar */}
       <div className="dashboard-topbar">
         <div className="topbar-left">
-          <h2 className="topbar-greeting">{greeting}, {user?.name?.split(" ")[0] || "there"} 👋</h2>
+          <h2 className="topbar-greeting">
+            {greeting}, {user?.name?.split(" ")[0] || "there"} 👋
+          </h2>
         </div>
         <div className="topbar-right">
           <div className="topbar-search">
@@ -99,37 +121,59 @@ function DashboardPage() {
             </div>
 
             <div className="rooms-grid">
-              {myRooms.map((room) => (
-                <motion.div
-                  key={room.id}
-                  className="room-card"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="room-card-top">
-                    <Badge variant={room.category === "Electronics" ? "info" : room.category === "Fashion" ? "purple" : "success"}>
-                      {room.category}
-                    </Badge>
-                    <Badge variant={room.type === "private" ? "warning" : "default"}>
-                      {room.type === "private" ? "🔒 Private" : "🌐 Public"}
-                    </Badge>
-                  </div>
-                  <h4 className="room-card-name">{room.name}</h4>
-                  <p className="room-card-host">Hosted by {room.host}</p>
-                  <div className="room-card-footer">
-                    <span className="room-card-members">👥 {room.members}/{room.maxMembers}</span>
-                    <span className="room-card-code">{room.code}</span>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={() => navigate(`/rooms/${room.id}`)}
-                    >
-                      Join
-                    </Button>
-                  </div>
-                </motion.div>
-              ))}
+              {loadingRooms ? (
+                <p style={{ color: "var(--text-muted)", padding: "20px" }}>
+                  Loading rooms...
+                </p>
+              ) : myRooms.length === 0 ? (
+                <p style={{ color: "var(--text-muted)", padding: "20px" }}>
+                  No rooms yet. Create your first room!
+                </p>
+              ) : (
+                myRooms.map((room) => (
+                  <motion.div
+                    key={room._id || room.id}
+                    className="room-card"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    whileHover={{ y: -2 }}
+                  >
+                    <div className="room-card-top">
+                      <Badge
+                        variant={
+                          room.category === "Electronics"
+                            ? "info"
+                            : room.category === "Fashion"
+                            ? "purple"
+                            : "success"
+                        }
+                      >
+                        {room.category}
+                      </Badge>
+                      <Badge variant={room.type === "private" ? "warning" : "default"}>
+                        {room.type === "private" ? "🔒 Private" : "🌐 Public"}
+                      </Badge>
+                    </div>
+                    <h4 className="room-card-name">{room.name}</h4>
+                    <p className="room-card-host">
+                      Hosted by {room.host?.name || room.host || "Unknown"}
+                    </p>
+                    <div className="room-card-footer">
+                      <span className="room-card-members">
+                        👥 {room.members?.length || room.members || 0}/{room.maxMembers}
+                      </span>
+                      <span className="room-card-code">{room.code}</span>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => navigate(`/rooms/${room._id || room.id}`)}
+                      >
+                        Join
+                      </Button>
+                    </div>
+                  </motion.div>
+                ))
+              )}
             </div>
           </div>
 
@@ -152,7 +196,9 @@ function DashboardPage() {
         <div className="dashboard-section">
           <div className="section-row">
             <h3 className="section-heading">Trending Now</h3>
-            <Link to="/products" className="section-see-all">See all →</Link>
+            <Link to="/products" className="section-see-all">
+              See all →
+            </Link>
           </div>
           <div className="trending-scroll">
             {MOCK_PRODUCTS.slice(0, 8).map((p) => (

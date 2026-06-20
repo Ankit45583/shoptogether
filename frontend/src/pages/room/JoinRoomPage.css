@@ -3,345 +3,206 @@
 ========================================== */
 
 .join-room-page {
-  max-width: 760px;
-
+  max-width: 900px;
   margin: 0 auto;
-
-  padding: 24px;
-
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-
-  gap: 24px;
+  gap: 28px;
 }
 
 /* ==========================================
-   JOIN CARD
+   PAGE HEADER
 ========================================== */
 
-.join-card {
-  background:
-    rgba(255,255,255,0.03);
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
-  border:
-    1px solid rgba(255,255,255,0.08);
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
 
-  border-radius: 28px;
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  transform: translateX(-2px);
+}
 
-  padding: 40px 32px;
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
 
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 4px 0 0 0;
+}
+
+/* ==========================================
+   JOIN SECTION (Card style)
+========================================== */
+
+.join-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  gap: 20px;
-
-  text-align: center;
-
+  gap: 16px;
   backdrop-filter: blur(16px);
 }
 
-.join-card-title {
-  font-size: 1.75rem;
-  font-weight: 800;
-}
-
-.join-card-sub {
-  color: var(--text-secondary);
-
-  max-width: 500px;
-
-  line-height: 1.6;
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
 }
 
 /* ==========================================
-   ROOM CODE INPUTS
+   JOIN BY CODE FORM
 ========================================== */
 
-.code-inputs {
+.join-code-form {
   display: flex;
   gap: 12px;
-
-  justify-content: center;
-
-  margin: 8px 0;
+  align-items: stretch;
 }
 
-.code-box {
-  width: 60px;
-  height: 68px;
-
-  border-radius: 16px;
-
-  border:
-    2px solid rgba(255,255,255,0.08);
-
-  background:
-    rgba(255,255,255,0.04);
-
-  color:
-    var(--text-primary);
-
-  text-align: center;
-
-  font-size: 1.8rem;
-  font-weight: 800;
-
-  font-family: monospace;
-
-  text-transform: uppercase;
-
-  transition: all 0.25s ease;
-}
-
-.code-box:focus {
-  outline: none;
-
-  border-color:
-    var(--accent-purple);
-
-  box-shadow:
-    0 0 0 4px rgba(139,92,246,0.15);
-
-  transform: translateY(-2px);
-}
-
-/* ==========================================
-   BROWSE SECTION
-========================================== */
-
-.browse-section {
-  display: flex;
-  flex-direction: column;
-
-  gap: 20px;
-}
-
-.browse-controls {
-  display: flex;
-  gap: 12px;
-}
-
-/* ==========================================
-   SEARCH
-========================================== */
-
-.browse-search {
+.join-code-input {
   flex: 1;
-
-  position: relative;
-
-  display: flex;
-  align-items: center;
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
 }
 
-.search-icon {
-  position: absolute;
-  left: 14px;
-
+.join-code-input::placeholder {
   color: var(--text-muted);
-
-  pointer-events: none;
+  letter-spacing: 2px;
+  font-weight: 500;
+  opacity: 0.6;
 }
 
-.browse-search-input {
-  width: 100%;
-  height: 46px;
-
-  padding-left: 42px;
-  padding-right: 16px;
-
-  border-radius: 14px;
-
-  background:
-    rgba(255,255,255,0.03);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  color:
-    var(--text-primary);
-
-  transition: all 0.25s ease;
-}
-
-.browse-search-input:focus {
+.join-code-input:focus {
   outline: none;
-
-  border-color:
-    var(--accent-purple);
-
-  box-shadow:
-    0 0 0 4px rgba(139,92,246,0.12);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ==========================================
-   FILTER CHIPS
-========================================== */
-
-.filter-chips {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 10px;
-}
-
-.filter-chip {
-  padding: 10px 16px;
-
-  border-radius: 999px;
-
-  background:
-    rgba(255,255,255,0.03);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  color:
-    var(--text-secondary);
-
-  cursor: pointer;
-
-  transition: all 0.25s ease;
-}
-
-.filter-chip:hover {
-  border-color:
-    rgba(139,92,246,0.25);
-
-  color:
-    var(--accent-purple);
-}
-
-.filter-chip.active {
-  background:
-    rgba(139,92,246,0.12);
-
-  color:
-    var(--accent-purple);
-
-  border-color:
-    rgba(139,92,246,0.3);
-}
-
-/* ==========================================
-   PUBLIC ROOMS
+   PUBLIC ROOMS LIST
 ========================================== */
 
 .public-rooms-list {
   display: flex;
   flex-direction: column;
-
-  gap: 14px;
+  gap: 12px;
 }
 
 .public-room-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 16px;
-
-  padding: 20px;
-
-  border-radius: 20px;
-
-  background:
-    rgba(255,255,255,0.03);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
 }
 
 .public-room-card:hover {
-  transform: translateY(-3px);
-
-  border-color:
-    rgba(139,92,246,0.25);
-
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.18);
+  transform: translateY(-2px);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .public-room-info {
   flex: 1;
-
   display: flex;
   flex-direction: column;
-
-  gap: 4px;
+  gap: 6px;
+  min-width: 0;
+  align-items: flex-start; /* ✅ Badge ko full-width hone se rokta hai */
 }
 
-.public-room-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.public-room-name {
+.public-room-info h4 {
   font-size: 1rem;
   font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
 }
 
-.public-room-meta {
+.public-room-info p {
   color: var(--text-secondary);
-
   font-size: 13px;
-}
-
-.public-room-code {
-  font-size: 13px;
-
-  color: var(--text-muted);
-}
-
-.public-room-code span {
-  color: var(--accent-purple);
-
-  font-family: monospace;
-  font-weight: 700;
+  margin: 0;
 }
 
 /* ==========================================
-   LIVE BADGE
+   ✅ BADGE FIX — width auto karo
 ========================================== */
 
-.room-live-badge {
-  padding: 4px 10px;
-
+.public-room-info .badge,
+.public-room-info > span {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
   border-radius: 999px;
-
-  background:
-    rgba(34,197,94,0.12);
-
-  color:
-    #22c55e;
-
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
 }
 
 /* ==========================================
-   EMPTY STATE
+   LOADING / EMPTY STATES
 ========================================== */
 
-.empty-browse {
-  padding: 48px 24px;
-
+.loading-text,
+.empty-text {
   text-align: center;
-
-  color:
-    var(--text-muted);
-
-  border-radius: 20px;
-
-  background:
-    rgba(255,255,255,0.03);
-
-  border:
-    1px dashed rgba(255,255,255,0.08);
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 32px 16px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
 }
 
 /* ==========================================
@@ -349,50 +210,54 @@
 ========================================== */
 
 @media (max-width: 768px) {
-
   .join-room-page {
-    padding: 16px;
+    padding: 20px 16px;
+    gap: 20px;
   }
 
-  .join-card {
-    padding: 24px 20px;
-  }
-
-  .join-card-title {
+  .page-title {
     font-size: 1.4rem;
   }
 
-  .code-box {
-    width: 48px;
-    height: 56px;
-
-    font-size: 1.4rem;
+  .join-section {
+    padding: 20px;
+    border-radius: 16px;
   }
 
-  .browse-controls {
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .join-code-form {
     flex-direction: column;
+  }
+
+  .join-code-input {
+    height: 46px;
   }
 
   .public-room-card {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 14px;
   }
 
-  .public-room-card .btn {
-    width: 100%;
+  .public-room-info {
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-
-  .code-inputs {
-    gap: 8px;
+  .page-header {
+    gap: 12px;
   }
 
-  .code-box {
-    width: 42px;
-    height: 50px;
+  .page-title {
+    font-size: 1.25rem;
+  }
 
-    font-size: 1.2rem;
+  .back-btn {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 }

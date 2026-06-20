@@ -1,64 +1,67 @@
-import { AiOutlineClose, AiOutlineCopy } from "react-icons/ai";
-import { BsPersonPlus } from "react-icons/bs";
-import Avatar from "../../../components/ui/Avatar/Avatar";
-import Badge from "../../../components/ui/Badge/Badge";
-import Button from "../../../components/ui/Button/Button";
-import { MOCK_USERS } from "../../../config/constants";
-import { copyToClipboard } from "../../../lib/utils";
-import toast from "react-hot-toast";
 import "./MembersPanel.css";
-
-const members = MOCK_USERS.map((u, i) => ({ ...u, online: i < 4, role: i === 0 ? "Host" : "Member" }));
-
-function MembersPanel({ room, open, onClose }) {
-  const handleCopy = async () => {
-    await copyToClipboard(room.code);
-    toast.success("Room code copied!");
-  };
-
+function MembersPanel({ room, members = [], open, onClose }) {
   return (
     <>
-      {/* Overlay for mobile */}
-      {open && <div className="members-overlay" onClick={onClose} />}
+      <div className={`members-overlay ${open ? "active" : ""} hide-desktop`} onClick={onClose} />
 
       <aside className={`members-panel ${open ? "open" : ""}`}>
+        {/* Header */}
         <div className="members-panel-header">
           <div>
-            <h3 className="members-room-name">{room.name}</h3>
+            <h3 className="members-room-name">{room?.name}</h3>
             <div className="members-room-code">
-              <span>{room.code}</span>
-              <button onClick={handleCopy} className="icon-btn" title="Copy code">
-                <AiOutlineCopy size={14} />
-              </button>
+              Code: {room?.code}
             </div>
           </div>
-          <button className="icon-btn hide-desktop" onClick={onClose}>
-            <AiOutlineClose size={18} />
-          </button>
         </div>
-
-        <Button variant="secondary" size="sm" fullWidth leftIcon={<BsPersonPlus size={14} />} onClick={() => { copyToClipboard(room.code); toast.success("Invite link copied!"); }}>
-          Invite Friends
-        </Button>
 
         <div className="members-divider" />
 
+        {/* Members List */}
         <div className="members-list-header">
-          <span>Online Members</span>
-          <span className="members-count">{members.filter((m) => m.online).length}</span>
+          <span>Members</span>
+          <span className="members-count">{members.length}</span>
         </div>
 
         <div className="members-list">
-          {members.map((m) => (
-            <div key={m.id} className="member-item">
-              <Avatar name={m.name} size="sm" online={m.online} />
-              <div className="member-info">
-                <span className="member-name">{m.name}</span>
-                <span className="member-username">@{m.username}</span>
+          {members.length === 0 ? (
+            <div className="members-empty">No members yet</div>
+          ) : (
+            members.map((m) => (
+              <div key={m._id || m.user?._id} className="member-item">
+                <div className="member-avatar">
+                  {m.user?.avatar ? (
+                    <img src={m.user.avatar} alt={m.user?.name} />
+                  ) : (
+                    <div
+                      className="avatar-fallback"
+                      style={{
+                        background: "var(--accent-purple)",
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "white",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {m.user?.name?.[0]?.toUpperCase() || "?"}
+                    </div>
+                  )}
+                  <span className="member-online" />
+                </div>
+                <div className="member-info">
+                  <span className="member-name">{m.user?.name}</span>
+                  <span className="member-username">@{m.user?.username}</span>
+                </div>
+                {m.role === "host" && (
+                  <span className="member-host">Host</span>
+                )}
               </div>
-              <Badge variant={m.role === "Host" ? "purple" : "default"}>{m.role}</Badge>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </aside>
     </>

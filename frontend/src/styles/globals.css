@@ -18,13 +18,19 @@
   margin: 0;
   padding: 0;
 }
-#root {
-  min-height: 100vh;
-}
 
 /* ==========================================
-   ROOT
+   ROOT — ✅ FIXED: Full viewport always
 ========================================== */
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 html {
   font-size: 16px;
@@ -32,27 +38,21 @@ html {
 }
 
 body {
-  min-height: 100vh;
-
   font-family: var(--font-family, 'Inter', sans-serif);
-
-  background:
-    linear-gradient(
-      180deg,
-      var(--bg-primary),
-      #0f172a
-    );
-
+  background: linear-gradient(180deg, var(--bg-primary), #0f172a);
   color: var(--text-primary);
-
   line-height: 1.6;
-
   text-rendering: optimizeLegibility;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ==========================================
@@ -60,11 +60,8 @@ body {
 ========================================== */
 
 ::selection {
-  background:
-    rgba(139,92,246,0.3);
-
-  color:
-    var(--text-primary);
+  background: rgba(139, 92, 246, 0.3);
+  color: var(--text-primary);
 }
 
 /* ==========================================
@@ -74,10 +71,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-
-  transition:
-    color 0.25s ease,
-    opacity 0.25s ease;
+  transition: color 0.25s ease, opacity 0.25s ease;
 }
 
 a:hover {
@@ -104,7 +98,6 @@ textarea,
 select {
   font-family: inherit;
   font-size: 1rem;
-
   color: inherit;
 }
 
@@ -126,16 +119,9 @@ picture {
    TYPOGRAPHY
 ========================================== */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
-
   font-weight: 700;
-
   line-height: 1.2;
 }
 
@@ -144,7 +130,7 @@ p {
 }
 
 /* ==========================================
-   LISTS
+   LISTS & TABLES
 ========================================== */
 
 ul,
@@ -152,17 +138,13 @@ ol {
   list-style: none;
 }
 
-/* ==========================================
-   TABLES
-========================================== */
-
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
 /* ==========================================
-   FOCUS STATES
+   FOCUS
 ========================================== */
 
 :focus-visible {
@@ -180,29 +162,21 @@ table {
 }
 
 ::-webkit-scrollbar-track {
-  background:
-    rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 ::-webkit-scrollbar-thumb {
-  background:
-    rgba(255,255,255,0.12);
-
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background:
-    rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
-
-/* Firefox */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color:
-    rgba(255,255,255,0.15)
-    transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 /* ==========================================
@@ -212,70 +186,29 @@ table {
 .container {
   width: 100%;
   max-width: 1280px;
-
   margin-inline: auto;
-
   padding-inline: 24px;
 }
 
 /* ==========================================
-   COMMON UTILITIES
+   UTILITIES
 ========================================== */
 
-.hidden {
-  display: none !important;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.h-full {
-  height: 100%;
-}
-
-.flex {
-  display: flex;
-}
-
-.grid {
-  display: grid;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-/* ==========================================
-   LOADING CURSOR
-========================================== */
-
-.loading {
-  cursor: wait;
-}
-
-/* ==========================================
-   APP ROOT
-========================================== */
-
-#root {
-  min-height: 100vh;
-}
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.flex { display: flex; }
+.grid { display: grid; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.loading { cursor: wait; }
 
 /* ==========================================
    MOBILE
 ========================================== */
 
 @media (max-width: 768px) {
-
   html {
     font-size: 15px;
   }
@@ -285,12 +218,7 @@ table {
   }
 }
 
-/* ==========================================
-   SMALL MOBILE
-========================================== */
-
 @media (max-width: 480px) {
-
   html {
     font-size: 14px;
   }
@@ -305,7 +233,6 @@ table {
 ========================================== */
 
 @media (prefers-reduced-motion: reduce) {
-
   html {
     scroll-behavior: auto;
   }
@@ -315,44 +242,16 @@ table {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-
     transition-duration: 0.01ms !important;
   }
 }
-/* ==========================================
-   ROOM PAGE - BODY LOCK
-========================================== */
 
 /* ==========================================
-   ROOM PAGE - FORCE FULL HEIGHT
+   ✅ LIVE ROOM — Body lock when inside room
+   (No JS class needed — works automatically)
 ========================================== */
 
-/* ==========================================
-   ROOM PAGE - FORCE FULL HEIGHT
-========================================== */
-
-html.room-page-open {
-  height: 100% !important;
+body:has(.dashboard-layout.room-layout) {
   overflow: hidden !important;
-}
-
-html.room-page-open body {
-  height: 100% !important;
-  min-height: 100% !important;
-  max-height: 100% !important;
-  overflow: hidden !important;
-  background: var(--bg-primary) !important;
-}
-
-html.room-page-open #root {
-  height: 100% !important;
-  min-height: 100% !important;
-  max-height: 100% !important;
-  overflow: hidden !important;
-  display: flex !important;
-}
-
-html.room-page-open #root > * {
-  height: 100% !important;
-  width: 100% !important;
+  height: 100vh !important;
 }

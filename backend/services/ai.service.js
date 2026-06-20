@@ -1,11 +1,24 @@
-import openai from "../config/openai.js";
+import ai from "../config/gemini.js";
 import logger from "../utils/logger.js";
 
-/**
- * Analyzes group chat messages for mood, preferences, and budget.
- * @param {string[]} messages - Array of message strings
- * @returns {Promise<{mood, categories, budgetRange, preferences}>}
- */
+/* ==========================================
+   HELPER: Clean JSON from Gemini response
+========================================== */
+const cleanJSON = (raw) => {
+  return raw.replace(/```json/g, "").replace(/```/g, "").trim();
+};
+
+/* ==========================================
+   HELPER: Call Gemini
+========================================== */
+const callGemini = async (prompt) => {
+  const response = await ai.generateContent(prompt);
+  return response.text;
+};
+
+/* ==========================================
+   1. ANALYZE GROUP CHAT
+========================================== */
 export const analyzeGroupChat = async (messages) => {
   const startTime = Date.now();
 
@@ -22,53 +35,39 @@ export const analyzeGroupChat = async (messages) => {
 
   try {
     const chatText = messages.slice(0, 30).join("\n");
+    const prompt = `You are a shopping assistant AI. Analyze this group chat and extract: mood, preferred categories, budget range (in INR), and key preferences. Return ONLY valid JSON with keys: mood (string), categories (array of strings), budgetRange ({min: number, max: number, currency: "INR"}), preferences (object). No markdown.
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      max_tokens: 600,
-      messages: [
-        {
-          role: "system",
-          content:
-            'You are a shopping assistant AI. Analyze this group chat and extract: mood, preferred categories, budget range (in INR), and key preferences. Return ONLY valid JSON with keys: mood (string), categories (array of strings), budgetRange ({min: number, max: number, currency: "INR"}), preferences (object with any relevant keys).',
-        },
-        {
-          role: "user",
-          content: `Group chat messages:\n${chatText}`,
-        },
-      ],
-    });
+Chat:
+${chatText}`;
 
-    const raw = response.choices[0]?.message?.content || "";
-    const clean = raw.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
+    const raw = await callGemini(prompt);
+    const parsed = JSON.parse(cleanJSON(raw));
 
-    logger.info(`analyzeGroupChat tokens used: ${response.usage?.total_tokens}`);
-
-    return {
-      ...parsed,
-      tokensUsed: response.usage?.total_tokens || 0,
-      processingTime: Date.now() - startTime,
-    };
+    logger.info(`✅ analyzeGroupChat success`);
+    return { ...parsed, tokensUsed: 0, processingTime: Date.now() - startTime };
   } catch (error) {
-    logger.error("OpenAI analyzeGroupChat error:", error.message);
+    logger.error("Gemini analyzeGroupChat error:", error.message || error);
+    console.error("🔴 FULL ERROR:", error);
     return fallback;
   }
 };
 
-/**
- * Generates product recommendations based on group data.
- * @param {Object} groupData - { messages, votes, preferences, budget }
- * @returns {Promise<Array>}
- */
-export const generateRecommendations = async ({ messages = [], votes = {}, preferences = {}, budget = {} }) => {
+/* ==========================================
+   2. GENERATE PRODUCT RECOMMENDATIONS
+========================================== */
+export const generateRecommendations = async ({
+  messages = [],
+  votes = {},
+  preferences = {},
+  budget = {},
+}) => {
   const startTime = Date.now();
 
   const fallback = {
     recommendations: [
       {
         productName: "boAt Rockerz 450",
-        reason: "Popular wireless headphones with great bass, fits group budget",
+        reason: "Popular wireless headphones with great bass",
         estimatedPrice: "₹1,499",
         category: "electronics",
       },
@@ -95,49 +94,49 @@ export const generateRecommendations = async ({ messages = [], votes = {}, prefe
     const prefSummary = JSON.stringify(preferences).slice(0, 300);
     const budgetSummary = JSON.stringify(budget);
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      max_tokens: 800,
-      messages: [
-        {
-          role: "system",
-          content:
-            'You are an AI shopping assistant for a group of Indian shoppers. Based on the group chat, votes, and preferences, recommend 3-5 products available in India. Return ONLY valid JSON array where each item has: productName (string), reason (string), estimatedPrice (string with ₹ symbol), category (string from: fashion, electronics, beauty, home, sports, books, toys, grocery, health, automotive).',
-        },
-        {
-          role: "user",
-          content: `Group chat:\n${chatText}\n\nVotes summary: ${votesSummary}\nPreferences: ${prefSummary}\nBudget: ${budgetSummary}`,
-        },
-      ],
-    });
+    const prompt = `You are an AI shopping assistant for Indian shoppers. Based on the group chat, votes, and preferences, recommend 3-5 products available in India. Return ONLY a valid JSON array (no markdown, no explanation) where each item has: productName (string), reason (string), estimatedPrice (string with ₹), category (string from: fashion, electronics, beauty, home, sports, books, toys, grocery, health, automotive).
 
-    const raw = response.choices[0]?.message?.content || "[]";
-    const clean = raw.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
+Group chat:
+${chatText}
 
-    logger.info(`generateRecommendations tokens used: ${response.usage?.total_tokens}`);
+Votes: ${votesSummary}
+Preferences: ${prefSummary}
+Budget: ${budgetSummary}
 
+Return ONLY JSON array:`;
+
+    const raw = await callGemini(prompt);
+    const parsed = JSON.parse(cleanJSON(raw));
+
+    logger.info(`✅ generateRecommendations success`);
     return {
-      recommendations: Array.isArray(parsed) ? parsed : parsed.recommendations || fallback.recommendations,
-      tokensUsed: response.usage?.total_tokens || 0,
+      recommendations: Array.isArray(parsed)
+        ? parsed
+        : parsed.recommendations || fallback.recommendations,
+      tokensUsed: 0,
       processingTime: Date.now() - startTime,
     };
   } catch (error) {
-    logger.error("OpenAI generateRecommendations error:", error.message);
+    logger.error("Gemini generateRecommendations error:", error.message || error);
+    console.error("🔴 FULL ERROR:", error);
     return fallback;
   }
 };
 
-/**
- * Generates a human-readable summary of the room's shopping session.
- * @param {Object} roomData - { roomName, messages, votes, cartItems, members }
- * @returns {Promise<string>}
- */
-export const generateGroupSummary = async ({ roomName, messages = [], votes = {}, cartItems = [], members = [] }) => {
+/* ==========================================
+   3. GENERATE GROUP SUMMARY
+========================================== */
+export const generateGroupSummary = async ({
+  roomName,
+  messages = [],
+  votes = {},
+  cartItems = [],
+  members = [],
+}) => {
   const startTime = Date.now();
 
   const fallback = {
-    summary: `The group "${roomName}" with ${members.length} member(s) is actively shopping together. They have been discussing products and voting on their favourites.`,
+    summary: `The group "${roomName}" with ${members.length} member(s) is actively shopping together.`,
     tokensUsed: 0,
     processingTime: Date.now() - startTime,
   };
@@ -149,41 +148,29 @@ export const generateGroupSummary = async ({ roomName, messages = [], votes = {}
       .map((i) => i.product?.name || "item")
       .join(", ");
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      max_tokens: 300,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a shopping session summarizer. Write a single human-readable paragraph (2-3 sentences) summarizing the group shopping session. Mention the number of members, what they're shopping for, popular items, and estimated budget if detectable. Keep it conversational and friendly.",
-        },
-        {
-          role: "user",
-          content: `Room: "${roomName}"\nMembers: ${members.length}\nCart items: ${cartSummary || "none yet"}\nChat:\n${chatText}\nVotes: ${JSON.stringify(votes).slice(0, 400)}`,
-        },
-      ],
-    });
+    const prompt = `You are a shopping session summarizer. Write a single human-readable paragraph (2-3 sentences) summarizing the group shopping session. Mention members count, what they're shopping for, popular items, and budget if detectable. Keep it conversational. No markdown.
 
-    const summary = response.choices[0]?.message?.content?.trim() || fallback.summary;
-    logger.info(`generateGroupSummary tokens used: ${response.usage?.total_tokens}`);
+Room: "${roomName}"
+Members: ${members.length}
+Cart items: ${cartSummary || "none yet"}
+Chat:
+${chatText}
+Votes: ${JSON.stringify(votes).slice(0, 400)}`;
 
-    return {
-      summary,
-      tokensUsed: response.usage?.total_tokens || 0,
-      processingTime: Date.now() - startTime,
-    };
+    const summary = (await callGemini(prompt))?.trim() || fallback.summary;
+
+    logger.info(`✅ generateGroupSummary success`);
+    return { summary, tokensUsed: 0, processingTime: Date.now() - startTime };
   } catch (error) {
-    logger.error("OpenAI generateGroupSummary error:", error.message);
+    logger.error("Gemini generateGroupSummary error:", error.message || error);
+    console.error("🔴 FULL ERROR:", error);
     return fallback;
   }
 };
 
-/**
- * Detects budget range from messages.
- * @param {string[]} messages
- * @returns {Promise<{min: number, max: number, currency: string}>}
- */
+/* ==========================================
+   4. DETECT BUDGET
+========================================== */
 export const detectBudget = async (messages) => {
   const fallback = { min: 500, max: 5000, currency: "INR" };
 
@@ -191,28 +178,47 @@ export const detectBudget = async (messages) => {
 
   try {
     const chatText = messages.slice(0, 20).join("\n");
+    const prompt = `Extract the budget range from the group chat. Return ONLY valid JSON (no markdown): { "min": number, "max": number, "currency": "INR" }. If no budget mentioned, estimate from context.
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      max_tokens: 150,
-      messages: [
-        {
-          role: "system",
-          content:
-            'Extract the budget range from the group chat. Return ONLY valid JSON: { "min": number, "max": number, "currency": "INR" }. If no budget is mentioned, estimate from context.',
-        },
-        {
-          role: "user",
-          content: chatText,
-        },
-      ],
-    });
+Chat:
+${chatText}`;
 
-    const raw = response.choices[0]?.message?.content || "";
-    const clean = raw.replace(/```json|```/g, "").trim();
-    return JSON.parse(clean);
+    const raw = await callGemini(prompt);
+    return JSON.parse(cleanJSON(raw));
   } catch (error) {
-    logger.error("OpenAI detectBudget error:", error.message);
+    logger.error("Gemini detectBudget error:", error.message || error);
     return fallback;
+  }
+};
+
+/* ==========================================
+   5. AI CHAT REPLY (For @ai mentions)
+========================================== */
+export const generateChatReply = async ({ userMessage, roomContext = [] }) => {
+  const startTime = Date.now();
+
+  try {
+    const context = roomContext.slice(-10).join("\n");
+
+    const prompt = `You are a helpful AI shopping assistant in a group chat. Be friendly, concise (2-3 sentences max). No markdown, plain text only.
+
+Recent chat:
+${context}
+
+User asks: ${userMessage}
+
+Your reply:`;
+
+    const reply = (await callGemini(prompt))?.trim();
+
+    logger.info(`✅ generateChatReply success`);
+    return { reply, tokensUsed: 0, processingTime: Date.now() - startTime };
+  } catch (error) {
+    logger.error("Gemini generateChatReply error:", error.message || error);
+    return {
+      reply: "Sorry, I'm having trouble right now. Please try again! 🤖",
+      tokensUsed: 0,
+      processingTime: Date.now() - startTime,
+    };
   }
 };

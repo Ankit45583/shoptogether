@@ -1,293 +1,587 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AiOutlineArrowUp, AiOutlineArrowDown, AiOutlineDelete, AiOutlineShareAlt } from "react-icons/ai";
-import { BsRobot, BsCartCheck, BsLightningCharge } from "react-icons/bs";
+import {
+  AiOutlineArrowUp,
+  AiOutlineArrowDown,
+  AiOutlineDelete,
+  AiOutlineShareAlt,
+  AiOutlinePlus,
+} from "react-icons/ai";
+import { BsRobot, BsCartCheck, BsLightningCharge, BsTrophy } from "react-icons/bs";
 import toast from "react-hot-toast";
-import Avatar from "../../../components/ui/Avatar/Avatar";
 import Badge from "../../../components/ui/Badge/Badge";
 import Button from "../../../components/ui/Button/Button";
-import { MOCK_PRODUCTS, CATEGORIES, CATEGORY_COLORS } from "../../../config/constants";
-import { formatPrice } from "../../../lib/utils";
+import { getSocket } from "../../../lib/socket";
+
+import { getAllProducts, shareProductToRoom } from "../../../api/product.api";
+import { castVote, getRoomVotes } from "../../../api/vote.api";
+import { getGroupCart, addToGroupCart, removeFromGroupCart } from "../../../api/cart.api";
+import { getSharedProducts } from "../../../api/room.api";
+import { getAIRecommendations, getRoomSummary } from "../../../api/ai.api";
+
 import useCartStore from "../../../store/cart.store";
 import useAuthStore from "../../../store/auth.store";
 import "./RightPanel.css";
 
 const tabs = ["Products", "Voting", "Cart", "AI"];
+const categories = ["All", "fashion", "electronics", "beauty", "sports", "home", "books"];
 
-/* ---------- Products tab ---------- */
-function ProductsTab() {
+/* ==========================================
+   PRODUCTS TAB
+========================================== */
+function ProductsTab({ roomId }) {
   const [cat, setCat] = useState("All");
-  const { addToCart } = useCartStore();
-  const filtered = cat === "All" ? MOCK_PRODUCTS : MOCK_PRODUCTS.filter((p) => p.category === cat);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [actionId, setActionId] = useState(null);
 
-  return (
-    <div className="tab-content">
-      <div className="mini-chips">
-        {["All", "Fashion", "Electronics", "Beauty", "Sports"].map((c) => (
-          <button key={c} className={`mini-chip ${cat === c ? "active" : ""}`} onClick={() => setCat(c)}>{c}</button>
-        ))}
-      </div>
-      <div className="products-list">
-        {filtered.map((p) => (
-          <div key={p.id} className="room-product-card">
-            <div className="rp-img" style={{ background: `${CATEGORY_COLORS[p.category]}18` }}>
-              <span>{p.emoji}</span>
-            </div>
-            <div className="rp-info">
-              <span className="rp-name">{p.name}</span>
-              <span className="rp-price">{formatPrice(p.price)}</span>
-            </div>
-            <div className="rp-actions">
-              <button className="rp-btn" title="Share" onClick={() => toast.success("Shared to chat!")}>
-                <AiOutlineShareAlt size={14} />
-              </button>
-              <button className="rp-btn vote" title="Add to cart" onClick={() => { addToCart({ ...p, addedBy: "You" }); toast.success("Added to cart!"); }}>
-                +
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+  useEffect(() => {
+    loadProducts();
+  }, [cat]);
 
-/* ---------- Voting tab ---------- */
-function VotingTab() {
-  const [votes, setVotes] = useState(() =>
-    MOCK_PRODUCTS.slice(0, 5).map((p) => ({ ...p }))
-  );
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllProducts({ category: cat, limit: 50 });
+      setProducts(res?.data?.products || []);
+    } catch {
+      toast.error("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const vote = (id, dir) => {
-    setVotes((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, votes: { ...p.votes, [dir]: p.votes[dir] + 1 } } : p
-      )
-    );
-    toast.success(dir === "up" ? "👍 Voted up!" : "👎 Voted down!");
+  const handleShare = async (product) => {
+    if (!roomId) return toast.error("Room not loaded");
+    try {
+      setActionId(`share-${product._id}`);
+      await shareProductToRoom(product._id, roomId);
+      toast.success(`📢 Shared "${product.name}" for voting`);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to share");
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    if (!roomId) return toast.error("Room not loaded");
+    try {
+      setActionId(`cart-${product._id}`);
+      await addToGroupCart(roomId, { productId: product._id, quantity: 1 });
+      toast.success(`🛒 Added "${product.name}" to cart`);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to add");
+    } finally {
+      setActionId(null);
+    }
   };
 
   return (
     <div className="tab-content">
-      <h4 className="tab-section-title">Active Votes</h4>
-      <div className="voting-list">
-        {votes.map((p) => {
-          const total = p.votes.up + p.votes.down;
-          const pct = total ? Math.round((p.votes.up / total) * 100) : 0;
-          return (
-            <div key={p.id} className="vote-item">
-              <div className="vote-item-top">
-                <div className="rp-img sm" style={{ background: `${CATEGORY_COLORS[p.category]}18` }}>
-                  <span>{p.emoji}</span>
-                </div>
-                <span className="vote-item-name">{p.name}</span>
-              </div>
-              <div className="vote-bar-wrap">
-                <div className="vote-bar-bg">
-                  <motion.div
-                    className="vote-bar-fill"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-                <span className="vote-pct">{pct}%</span>
-              </div>
-              <div className="vote-btns">
-                <button className="vote-btn up" onClick={() => vote(p.id, "up")}>
-                  <AiOutlineArrowUp size={13} /> {p.votes.up}
-                </button>
-                <button className="vote-btn down" onClick={() => vote(p.id, "down")}>
-                  <AiOutlineArrowDown size={13} /> {p.votes.down}
-                </button>
-              </div>
-            </div>
-          );
-        })}
+      <div className="mini-chips">
+        {categories.map((c) => (
+          <button
+            key={c}
+            className={`mini-chip ${cat === c ? "active" : ""}`}
+            onClick={() => setCat(c)}
+          >
+            {c === "All" ? "All" : c.charAt(0).toUpperCase() + c.slice(1)}
+          </button>
+        ))}
       </div>
 
-      <div className="ai-consensus-card">
-        <div className="ai-consensus-header">
-          <BsRobot size={14} />
-          <span>AI Consensus Summary</span>
-        </div>
-        <p className="ai-consensus-text">
-          The group prefers electronics under ₹5,000. boAt Rockerz is leading with 89% approval.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Cart tab ---------- */
-function CartTab() {
-  const { cartItems, removeFromCart } = useCartStore();
-  const { user } = useAuthStore();
-  const total = cartItems.reduce((s, i) => s + i.price, 0);
-
-  return (
-    <div className="tab-content">
-      <div className="cart-header">
-        <h4 className="tab-section-title">Group Cart</h4>
-        <Badge variant="purple">{cartItems.length} items</Badge>
-      </div>
-
-      {cartItems.length === 0 ? (
-        <div className="cart-empty">
-          <BsCartCheck size={32} />
-          <p>Cart is empty</p>
-          <span>Add products from the Products tab</span>
-        </div>
+      {loading ? (
+        <p className="rp-empty-msg">Loading products...</p>
+      ) : products.length === 0 ? (
+        <p className="rp-empty-msg">No products found</p>
       ) : (
-        <div className="cart-list">
-          {cartItems.map((item) => (
-            <div key={item.id} className="cart-item">
-              <div className="rp-img sm" style={{ background: `${CATEGORY_COLORS[item.category]}18` }}>
-                <span>{item.emoji}</span>
+        <div className="products-list">
+          {products.map((p) => (
+            <div key={p._id} className="room-product-card">
+              <div className="rp-img">
+                {p.thumbnail ? (
+                  <img src={p.thumbnail} alt={p.name} />
+                ) : (
+                  <span>📦</span>
+                )}
               </div>
-              <div className="cart-item-info">
-                <span className="cart-item-name">{item.name}</span>
-                <span className="cart-item-price">{formatPrice(item.price)}</span>
-                <span className="cart-item-by">Added by {item.addedBy || "You"}</span>
+              <div className="rp-info">
+                <span className="rp-name">{p.name}</span>
+                <span className="rp-price">₹{p.price?.toLocaleString("en-IN")}</span>
               </div>
-              {(item.addedBy === "You" || !item.addedBy) && (
-                <button className="icon-btn danger" onClick={() => removeFromCart(item.id)} title="Remove">
-                  <AiOutlineDelete size={14} />
+              <div className="rp-actions">
+                <button
+                  className="rp-btn share"
+                  title="Share for voting"
+                  onClick={() => handleShare(p)}
+                  disabled={actionId === `share-${p._id}`}
+                >
+                  <AiOutlineShareAlt size={14} />
                 </button>
-              )}
+                <button
+                  className="rp-btn add"
+                  title="Add to cart"
+                  onClick={() => handleAddToCart(p)}
+                  disabled={actionId === `cart-${p._id}`}
+                >
+                  <AiOutlinePlus size={14} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
+    </div>
+  );
+}
 
-      {cartItems.length > 0 && (
-        <div className="cart-summary">
-          <div className="cart-summary-row">
-            <span>Items</span>
-            <span>{cartItems.length}</span>
-          </div>
-          <div className="cart-summary-row total">
-            <span>Total</span>
-            <span>{formatPrice(total)}</span>
-          </div>
-          <Button variant="primary" fullWidth onClick={() => toast("🚀 Checkout coming soon!")}>
-            Proceed to Checkout
-          </Button>
+/* ==========================================
+   VOTING TAB — Clean & Simple
+========================================== */
+function VotingTab({ roomId }) {
+  const [products, setProducts] = useState([]);
+  const [votes, setVotes] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [addingId, setAddingId] = useState(null);
+  const { user } = useAuthStore();
+
+  /* Initial load */
+  useEffect(() => {
+    if (roomId) loadData();
+  }, [roomId]);
+
+  /* Real-time socket updates */
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !roomId) return;
+
+    const handleVoteUpdate = (data) => {
+      // Skip my own vote (already updated optimistically)
+      if (data?.votedBy?.toString() === user?._id?.toString()) return;
+
+      setVotes((prev) => ({
+        ...prev,
+        [data.productId]: {
+          productId: data.productId,
+          votes: data.votes,
+          userVote: prev[data.productId]?.userVote || null,
+        },
+      }));
+    };
+
+    const handleProductShared = () => loadData();
+
+    socket.on("vote:updated", handleVoteUpdate);
+    socket.on("product:shared", handleProductShared);
+
+    return () => {
+      socket.off("vote:updated", handleVoteUpdate);
+      socket.off("product:shared", handleProductShared);
+    };
+  }, [roomId, user?._id]);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [sharedRes, votesRes] = await Promise.all([
+        getSharedProducts(roomId),
+        getRoomVotes(roomId),
+      ]);
+
+      const sharedProducts = sharedRes?.data?.products || [];
+      const votesArr = votesRes?.data?.votes || [];
+
+      const votesMap = {};
+      votesArr.forEach((v) => {
+        const pid = v.productId?.toString();
+        if (pid) votesMap[pid] = v;
+      });
+
+      setProducts(sharedProducts);
+      setVotes(votesMap);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load voting data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ✅ Optimistic vote update */
+  const handleVote = async (productId, type) => {
+    const current = votes[productId] || {
+      productId,
+      votes: { up: 0, down: 0, total: 0, percentage: 0 },
+      userVote: null,
+    };
+
+    let newUp = current.votes.up;
+    let newDown = current.votes.down;
+    let newUserVote = type;
+
+    if (current.userVote === type) {
+      if (type === "upvote") newUp--;
+      else newDown--;
+      newUserVote = null;
+    } else if (current.userVote && current.userVote !== type) {
+      if (type === "upvote") {
+        newUp++;
+        newDown--;
+      } else {
+        newDown++;
+        newUp--;
+      }
+    } else {
+      if (type === "upvote") newUp++;
+      else newDown++;
+    }
+
+    const newTotal = newUp + newDown;
+    const newPercentage = newTotal > 0 ? Math.round((newUp / newTotal) * 100) : 0;
+
+    setVotes((prev) => ({
+      ...prev,
+      [productId]: {
+        productId,
+        votes: { up: newUp, down: newDown, total: newTotal, percentage: newPercentage },
+        userVote: newUserVote,
+      },
+    }));
+
+    try {
+      await castVote({ productId, roomId, type });
+    } catch (err) {
+      toast.error("Failed to vote");
+      loadData();
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    try {
+      setAddingId(product._id);
+      await addToGroupCart(roomId, { productId: product._id, quantity: 1 });
+      toast.success(`🛒 Added "${product.name}" to cart`);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed");
+    } finally {
+      setAddingId(null);
+    }
+  };
+
+  /* Sort by approval percentage (highest first) */
+  const sorted = products
+    .map((p) => ({
+      product: p,
+      vote: votes[p._id] || { votes: { up: 0, down: 0, total: 0, percentage: 0 } },
+    }))
+    .sort((a, b) => {
+      const totalDiff = (b.vote?.votes?.total || 0) - (a.vote?.votes?.total || 0);
+      if (totalDiff !== 0) return totalDiff;
+      return (b.vote?.votes?.up || 0) - (a.vote?.votes?.up || 0);
+    });
+
+  return (
+    <div className="tab-content">
+      <div className="vote-header">
+        <h4 className="tab-section-title">🗳️ Group Voting</h4>
+        <Badge variant="purple">{products.length} products</Badge>
+      </div>
+
+      {loading ? (
+        <p className="rp-empty-msg">Loading...</p>
+      ) : products.length === 0 ? (
+        <div className="vote-empty">
+          <AiOutlineShareAlt size={32} style={{ opacity: 0.3 }} />
+          <p style={{ marginTop: 8, fontWeight: 600 }}>No products to vote on</p>
+          <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            Share products from the Products tab to start voting
+          </span>
+        </div>
+      ) : (
+        <div className="voting-list">
+          {sorted.map(({ product: p, vote }) => {
+            const v = vote.votes;
+            const userVote = vote.userVote;
+
+            return (
+              <div key={p._id} className="vote-item">
+                <div className="vote-item-top">
+                  <div className="rp-img sm">
+                    {p.thumbnail && <img src={p.thumbnail} alt={p.name} />}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="vote-item-name">{p.name}</div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "var(--accent-purple)",
+                        fontWeight: 700,
+                      }}
+                    >
+                      ₹{p.price?.toLocaleString("en-IN")}
+                    </div>
+                  </div>
+                  <button
+                    className="vote-add-btn"
+                    title="Add to cart"
+                    onClick={() => handleAddToCart(p)}
+                    disabled={addingId === p._id}
+                  >
+                    <AiOutlinePlus size={14} />
+                  </button>
+                </div>
+
+                <div className="vote-bar-wrap">
+                  <div className="vote-bar-bg">
+                    <motion.div
+                      className="vote-bar-fill"
+                      initial={false}
+                      animate={{ width: `${v.percentage}%` }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                    />
+                  </div>
+                  <span className="vote-pct">
+                    {v.total > 0 ? `${v.percentage}%` : "—"}
+                  </span>
+                </div>
+
+                <div className="vote-btns">
+                  <button
+                    className={`vote-btn up ${userVote === "upvote" ? "active" : ""}`}
+                    onClick={() => handleVote(p._id, "upvote")}
+                  >
+                    <AiOutlineArrowUp size={13} /> {v.up}
+                  </button>
+                  <button
+                    className={`vote-btn down ${userVote === "downvote" ? "active" : ""}`}
+                    onClick={() => handleVote(p._id, "downvote")}
+                  >
+                    <AiOutlineArrowDown size={13} /> {v.down}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-/* ---------- AI tab ---------- */
-function AITab() {
-  const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState([
-    { icon: "💰", text: "Group budget seems to be around ₹2,000 – ₹5,000" },
-    { icon: "🎯", text: "Most members prefer Electronics and Fashion" },
-    { icon: "👍", text: "3 members liked boAt Rockerz 450" },
-    { icon: "🔥", text: "Nike Air Max 270 has high engagement in chat" },
-  ]);
+/* ==========================================
+   CART TAB (Same as before)
+========================================== */
+function CartTab({ roomId }) {
+  const { cart, cartItems, totalItems, totalPrice, setCart } = useCartStore();
+  const { user } = useAuthStore();
+  const [loading, setLoading] = useState(true);
 
-  const refresh = async () => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    setSuggestions([
-      { icon: "📊", text: "Price sweet spot for this group: ₹1,000 – ₹4,000" },
-      { icon: "⭐", text: "Highest rated items: JBL Flip 6 & Lakme Kajal" },
-      { icon: "🛍️", text: "4 members have voted on Electronics today" },
-      { icon: "💡", text: "Consider Noise ColorFit Pro 4 — best value pick" },
-    ]);
-    setLoading(false);
-    toast.success("AI recommendations refreshed!");
+  useEffect(() => {
+    if (roomId) loadCart();
+  }, [roomId]);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !roomId) return;
+
+    const handleCartUpdate = ({ cart: updatedCart }) => setCart(updatedCart);
+    socket.on("cart:updated", handleCartUpdate);
+    return () => socket.off("cart:updated", handleCartUpdate);
+  }, [roomId, setCart]);
+
+  const loadCart = async () => {
+    try {
+      setLoading(true);
+      const res = await getGroupCart(roomId);
+      setCart(res?.data?.cart);
+    } catch {
+      toast.error("Failed to load cart");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = async (productId) => {
+    try {
+      await removeFromGroupCart(roomId, productId);
+      toast.success("Removed from cart");
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed");
+    }
+  };
+
+  return (
+    <div className="tab-content">
+      <div className="vote-header">
+        <h4 className="tab-section-title">🛒 Group Cart</h4>
+        <Badge variant="purple">{totalItems} items</Badge>
+      </div>
+
+      {loading ? (
+        <p className="rp-empty-msg">Loading...</p>
+      ) : cartItems.length === 0 ? (
+        <div className="vote-empty">
+          <BsCartCheck size={32} style={{ opacity: 0.3 }} />
+          <p style={{ marginTop: 8, fontWeight: 600 }}>Cart is empty</p>
+          <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            Add products from Products tab or vote on shared items
+          </span>
+        </div>
+      ) : (
+        <>
+          <div className="cart-list">
+            {cartItems.map((item) => (
+              <div key={item.product?._id} className="cart-item">
+                <div className="rp-img sm">
+                  {item.product?.thumbnail && <img src={item.product.thumbnail} alt={item.product.name} />}
+                </div>
+                <div className="cart-item-info">
+                  <span className="cart-item-name">{item.product?.name}</span>
+                  <span className="cart-item-price">
+                    ₹{(item.product?.price * item.quantity).toLocaleString("en-IN")} · Qty {item.quantity}
+                  </span>
+                  <span className="cart-item-by">By {item.addedBy?.name || "Unknown"}</span>
+                </div>
+                <button
+                  className="icon-btn danger"
+                  onClick={() => handleRemove(item.product?._id)}
+                  title="Remove"
+                >
+                  <AiOutlineDelete size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="cart-summary">
+            <div className="cart-summary-row">
+              <span>Items</span>
+              <span>{totalItems}</span>
+            </div>
+            <div className="cart-summary-row total">
+              <span>Total</span>
+              <span>₹{totalPrice?.toLocaleString("en-IN")}</span>
+            </div>
+            <Button variant="primary" fullWidth onClick={() => toast("🚀 Checkout coming soon!")}>
+              Proceed to Checkout
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ==========================================
+   AI TAB
+========================================== */
+function AITab({ roomId }) {
+  const [loading, setLoading] = useState(false);
+  const [recommendations, setRecommendations] = useState([]);
+  const [summary, setSummary] = useState("");
+
+  const handleGenerate = async () => {
+    if (!roomId) return;
+    try {
+      setLoading(true);
+      const res = await getAIRecommendations(roomId);
+      setRecommendations(res?.data?.recommendations || []);
+      toast.success("🤖 AI recommendations generated!");
+    } catch {
+      toast.error("Failed to generate");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSummary = async () => {
+    if (!roomId) return;
+    try {
+      setLoading(true);
+      const res = await getRoomSummary(roomId);
+      setSummary(res?.data?.summary || "");
+    } catch {
+      toast.error("Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="tab-content">
       <div className="ai-header">
-        <div className="ai-avatar">
-          <BsRobot size={22} />
-        </div>
+        <div className="ai-avatar"><BsRobot size={22} /></div>
         <div>
-          <h4 className="ai-title">AI Shopping Assistant</h4>
-          <div className="ai-status">
-            <span className="ai-dot" />
-            <span>Active</span>
-          </div>
+          <h4 className="ai-title">AI Assistant</h4>
+          <div className="ai-status">Powered by Gemini</div>
         </div>
       </div>
 
-      <div className="ai-suggestions">
-        {suggestions.map((s, i) => (
-          <motion.div
-            key={`${s.text}-${i}`}
-            className="ai-suggestion-card"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.08 }}
-          >
-            <span className="ai-suggestion-icon">{s.icon}</span>
-            <p className="ai-suggestion-text">{s.text}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <Button
-        variant="secondary"
-        fullWidth
-        loading={loading}
-        leftIcon={<BsLightningCharge size={14} />}
-        onClick={refresh}
-      >
-        Get New Recommendations
+      <Button variant="primary" fullWidth loading={loading} leftIcon={<BsLightningCharge size={14} />} onClick={handleGenerate}>
+        Generate Recommendations
       </Button>
 
-      <div className="ai-prefs">
-        <span className="ai-prefs-label">Detected Preferences</span>
-        <div className="ai-pref-tags">
-          {["Electronics", "Under ₹5K", "Fashion", "High Rated"].map((t) => (
-            <span key={t} className="ai-pref-tag">{t}</span>
+      {recommendations.length > 0 && (
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {recommendations.map((rec, i) => (
+            <motion.div key={i} className="ai-suggestion-card" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+              <span style={{ fontSize: 18 }}>🛍️</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontWeight: 700, fontSize: 13, margin: 0 }}>{rec.productName}</p>
+                <p style={{ fontSize: 11, opacity: 0.8, margin: "4px 0" }}>{rec.reason}</p>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <span style={{ color: "var(--accent-purple)", fontWeight: 700, fontSize: 12 }}>{rec.estimatedPrice}</span>
+                  <span className="ai-pref-tag">{rec.category}</span>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      )}
+
+      <Button variant="secondary" size="sm" fullWidth loading={loading} onClick={handleSummary} style={{ marginTop: 10 }}>
+        📝 Get Session Summary
+      </Button>
+
+      {summary && (
+        <div className="ai-consensus-card" style={{ marginTop: 10 }}>
+          <p className="ai-consensus-text">{summary}</p>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ---------- Main Right Panel ---------- */
-function RightPanel() {
+/* ==========================================
+   MAIN RIGHT PANEL
+========================================== */
+function RightPanel({ room }) {
   const [active, setActive] = useState("Products");
-  const { cartItems } = useCartStore();
+  const { totalItems } = useCartStore();
+  const roomId = room?._id;
 
-  const tabContent = { Products: <ProductsTab />, Voting: <VotingTab />, Cart: <CartTab />, AI: <AITab /> };
+  const tabContent = {
+    Products: <ProductsTab roomId={roomId} />,
+    Voting: <VotingTab roomId={roomId} />,
+    Cart: <CartTab roomId={roomId} />,
+    AI: <AITab roomId={roomId} />,
+  };
 
   return (
     <div className="right-panel">
       <div className="right-panel-tabs">
         {tabs.map((t) => (
-          <button
-            key={t}
-            className={`right-tab ${active === t ? "active" : ""}`}
-            onClick={() => setActive(t)}
-          >
+          <button key={t} className={`right-tab ${active === t ? "active" : ""}`} onClick={() => setActive(t)}>
             {t}
-            {t === "Cart" && cartItems.length > 0 && (
-              <span className="tab-badge">{cartItems.length}</span>
-            )}
+            {t === "Cart" && totalItems > 0 && <span className="tab-badge">{totalItems}</span>}
           </button>
         ))}
       </div>
 
       <div className="right-panel-body">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            style={{ height: "100%" }}
-          >
+          <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }} style={{ height: "100%" }}>
             {tabContent[active]}
           </motion.div>
         </AnimatePresence>

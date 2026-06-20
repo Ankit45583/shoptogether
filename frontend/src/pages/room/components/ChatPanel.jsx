@@ -1,77 +1,61 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { AiOutlineArrowLeft, AiOutlineSetting, AiOutlineSend, AiOutlineSmile } from "react-icons/ai";
-import { BsPeopleFill } from "react-icons/bs";
-import Avatar from "../../../components/ui/Avatar/Avatar";
-import useChatStore from "../../../store/chat.store";
+import { useState, useRef, useEffect } from "react";
+import { AiOutlineArrowLeft, AiOutlineMenu, AiOutlineSend, AiOutlineSmile } from "react-icons/ai";
 import useAuthStore from "../../../store/auth.store";
+import Avatar from "../../../components/ui/Avatar/Avatar";
 import "./ChatPanel.css";
 
-function ChatMessage({ msg, isOwn }) {
-  const isAI = msg.sender === "AI Host";
-  return (
-    <motion.div
-      className={`chat-msg ${isOwn ? "own" : ""} ${isAI ? "ai-msg" : ""}`}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-    >
-      {!isOwn && (
-        <Avatar name={msg.sender} size="xs" />
-      )}
-      <div className="chat-msg-body">
-        {!isOwn && (
-          <div className="chat-msg-meta">
-            <span className="chat-msg-sender">{msg.sender}</span>
-            <span className="chat-msg-time">{msg.time}</span>
-          </div>
-        )}
-        <div className="chat-msg-bubble">{msg.content}</div>
-        {isOwn && <span className="chat-msg-time own-time">{msg.time}</span>}
-      </div>
-    </motion.div>
-  );
-}
-
-function TypingIndicator({ users }) {
-  if (!users.length) return null;
-  return (
-    <div className="typing-indicator">
-      <div className="typing-dots">
-        <span /><span /><span />
-      </div>
-      <span className="typing-text">
-        {users.join(", ")} {users.length === 1 ? "is" : "are"} typing...
-      </span>
-    </div>
-  );
-}
-
-function ChatPanel({ room, onBack, onOpenMembers }) {
-  const { messages, addMessage, typingUsers } = useChatStore();
+function ChatPanel({
+  room,
+  messages = [],
+  typingUsers = [],
+  onSendMessage,
+  onTyping,
+  onOpenMembers,
+  onBack,
+}) {
   const { user } = useAuthStore();
   const [input, setInput] = useState("");
-  const bottomRef = useRef(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const typingTimer = useRef(null);
+  const messagesContainerRef = useRef(null); // ✨ NEW: container ref
+  const typingTimeoutRef = useRef(null);
 
-  // Auto-scroll to bottom on new message
+  /* ==========================================
+     ✅ FIXED: AUTO SCROLL — only inside container
+  ========================================== */
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      // Scroll only the messages container, NOT the whole page
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
-  const handleSend = () => {
-    const text = input.trim();
-    if (!text) return;
-    addMessage({
-      id: Date.now().toString(),
-      senderId: user?.id || "1",
-      sender: user?.name || "You",
-      content: text,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      type: "text",
-    });
+  /* ==========================================
+     SEND MESSAGE
+  ========================================== */
+
+  const handleSend = (e) => {
+    e?.preventDefault();
+    if (!input.trim()) return;
+
+    onSendMessage(input.trim());
     setInput("");
+
+    onTyping?.(false);
+    clearTimeout(typingTimeoutRef.current);
+  };
+
+  /* ==========================================
+     HANDLE TYPING
+  ========================================== */
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+    onTyping?.(true);
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      onTyping?.(false);
+    }, 2000);
   };
 
   const handleKeyDown = (e) => {
@@ -81,75 +65,107 @@ function ChatPanel({ room, onBack, onOpenMembers }) {
     }
   };
 
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-    if (!isTyping) setIsTyping(true);
-    clearTimeout(typingTimer.current);
-    typingTimer.current = setTimeout(() => setIsTyping(false), 1500);
-  };
-
   return (
     <div className="chat-panel">
-      {/* Chat top bar */}
+      {/* Top bar */}
       <div className="chat-topbar">
-        <button className="icon-btn" onClick={onBack} title="Back">
+        <button className="icon-btn show-mobile" onClick={onBack}>
           <AiOutlineArrowLeft size={18} />
         </button>
+        <button className="icon-btn show-mobile" onClick={onOpenMembers}>
+          <AiOutlineMenu size={18} />
+        </button>
         <div className="chat-room-info">
-          <span className="chat-room-name">{room.name}</span>
-          <span className="chat-room-status">
+          <h3 className="chat-room-name">{room?.name || "Loading..."}</h3>
+          <div className="chat-room-status">
             <span className="online-dot" />
-            {room.members} members online
-          </span>
-        </div>
-        <div className="chat-topbar-actions">
-          <button className="icon-btn show-mobile" onClick={onOpenMembers} title="Members">
-            <BsPeopleFill size={18} />
-          </button>
-          <button className="icon-btn" title="Settings">
-            <AiOutlineSetting size={18} />
-          </button>
+            {room?.members?.length || 0} members
+          </div>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="chat-messages">
+      {/* ✅ FIXED: Added ref to container instead of dummy div */}
+      <div className="chat-messages" ref={messagesContainerRef}>
         <div className="chat-messages-inner">
-          <AnimatePresence initial={false}>
-            {messages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                msg={msg}
-                isOwn={msg.senderId === (user?.id || "1")}
-              />
-            ))}
-          </AnimatePresence>
-          <TypingIndicator users={typingUsers} />
-          <div ref={bottomRef} />
+          {messages.length === 0 ? (
+            <p style={{ textAlign: "center", color: "var(--text-muted)", padding: "40px" }}>
+              No messages yet. Start the conversation!
+            </p>
+          ) : (
+            messages.map((msg) => {
+              const senderId = msg.sender?._id || msg.sender;
+              const isOwn = senderId === user?._id || senderId === user?.id;
+
+              return (
+                <div key={msg._id} className={`chat-msg ${isOwn ? "own" : ""}`}>
+                  {!isOwn && (
+                    <Avatar
+                      name={msg.sender?.name}
+                      src={msg.sender?.avatar}
+                      size="sm"
+                    />
+                  )}
+                  <div className="chat-msg-body">
+                    <div className="chat-msg-meta">
+                      {!isOwn && (
+                        <span className="chat-msg-sender">{msg.sender?.name}</span>
+                      )}
+                      <span className="chat-msg-time">
+                        {new Date(msg.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <div className="chat-msg-bubble">
+                      {msg.isDeleted ? (
+                        <em style={{ opacity: 0.6 }}>This message was deleted</em>
+                      ) : (
+                        msg.content
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+
+          {/* Typing indicator */}
+          {typingUsers.length > 0 && (
+            <div className="typing-indicator">
+              <div className="typing-dots">
+                <span /><span /><span />
+              </div>
+              <span className="typing-text">
+                {typingUsers.map((u) => u.name).join(", ")}{" "}
+                {typingUsers.length === 1 ? "is" : "are"} typing...
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Chat input */}
-      <div className="chat-input-area">
-        <button className="icon-btn chat-emoji-btn" title="Emoji">
+      {/* Input area */}
+      <form className="chat-input-area" onSubmit={handleSend}>
+        <button type="button" className="chat-emoji-btn icon-btn">
           <AiOutlineSmile size={20} />
         </button>
         <input
+          type="text"
           className="chat-input"
           placeholder="Message the group..."
           value={input}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          maxLength={500}
         />
         <button
+          type="submit"
           className={`chat-send-btn ${input.trim() ? "active" : ""}`}
-          onClick={handleSend}
           disabled={!input.trim()}
         >
           <AiOutlineSend size={18} />
         </button>
-      </div>
+      </form>
     </div>
   );
 }

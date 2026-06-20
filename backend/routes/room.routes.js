@@ -9,6 +9,7 @@ import {
   leaveRoom,
   removeMember,
   closeRoom,
+  getSharedProducts,   // ✨ NEW
 } from "../controllers/room.controller.js";
 import protect from "../middleware/auth.middleware.js";
 
@@ -20,6 +21,7 @@ router.post("/create", createRoom);
 router.post("/join", joinRoom);
 router.get("/my-rooms", getMyRooms);
 router.get("/public", getPublicRooms);
+router.get("/:roomId/shared-products", getSharedProducts);  // ✨ NEW
 router.get("/:roomId", getRoomById);
 router.put("/:roomId", updateRoom);
 router.post("/:roomId/leave", leaveRoom);

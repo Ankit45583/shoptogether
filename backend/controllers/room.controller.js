@@ -305,3 +305,30 @@ export const closeRoom = asyncHandler(async (req, res) => {
 
   res.status(200).json(response);
 });
+/* ==========================================
+   GET SHARED PRODUCTS OF ROOM
+========================================== */
+export const getSharedProducts = asyncHandler(async (req, res) => {
+  const { roomId } = req.params;
+
+  const room = await Room.findById(roomId)
+    .populate({
+      path: "sharedProducts",
+      populate: {
+        path: "addedBy",
+        select: "name username avatar",
+      },
+    })
+    .lean();
+
+  if (!room) throw new ApiError(404, "Room not found");
+
+  const isMember = room.members.some(
+    (m) => m.user.toString() === req.user._id.toString()
+  );
+  if (!isMember) throw new ApiError(403, "You are not a member of this room");
+
+  return res.status(200).json(
+    new ApiResponse(200, { products: room.sharedProducts || [] }, "Shared products fetched")
+  );
+});

@@ -217,3 +217,8 @@
     padding: 10px 12px;
   }
 }
+@media (min-width: 769px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
+}

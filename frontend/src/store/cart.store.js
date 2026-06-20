@@ -1,21 +1,32 @@
 import { create } from "zustand";
 
-const useCartStore = create((set) => ({
-  cartItems: [],
+const useCartStore = create((set, get) => ({
+  cart: null,           // Full cart object from backend
+  cartItems: [],        // Items array
+  totalItems: 0,
+  totalPrice: 0,
+  loading: false,
 
-  addToCart: (item) =>
-    set((state) => {
-      const exists = state.cartItems.find((i) => i.id === item.id);
-      if (exists) return state;
-      return { cartItems: [...state.cartItems, item] };
+  /* Set full cart from backend */
+  setCart: (cart) =>
+    set({
+      cart,
+      cartItems: cart?.items || [],
+      totalItems: cart?.totalItems || 0,
+      totalPrice: cart?.totalPrice || 0,
     }),
 
-  removeFromCart: (itemId) =>
-    set((state) => ({
-      cartItems: state.cartItems.filter((i) => i.id !== itemId),
-    })),
+  /* Clear cart locally */
+  clearCart: () =>
+    set({
+      cart: null,
+      cartItems: [],
+      totalItems: 0,
+      totalPrice: 0,
+    }),
 
-  clearCart: () => set({ cartItems: [] }),
+  /* Set loading */
+  setLoading: (loading) => set({ loading }),
 }));
 
 export default useCartStore;
