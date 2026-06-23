@@ -1,5 +1,5 @@
 .sidebar {
-  width: 280px;
+  width: 250px;
   height: 100vh;
   background: var(--bg-secondary);
   border-right: 1px solid var(--border-color);
@@ -151,33 +151,33 @@
   display: none;
 }
 
-/* Tablet */
+/* ==========================================
+   TABLET — Match dashboard variable (220px)
+========================================== */
 @media (max-width: 1024px) {
   .sidebar {
-    width: 250px;
+    width: 220px;
   }
 }
 
-/* Mobile */
+/* ==========================================
+   MOBILE — Drawer (full width allowed)
+========================================== */
 @media (max-width: 768px) {
   .sidebar-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-
     position: fixed;
-    top: 15px;
-    left: 15px;
-
-    width: 42px;
-    height: 42px;
-
+    top: 12px;
+    left: 12px;
+    width: 40px;
+    height: 40px;
     border: none;
     border-radius: 10px;
-
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
     color: var(--text-primary);
-
     cursor: pointer;
     z-index: 1101;
   }
@@ -185,7 +185,6 @@
   .sidebar {
     width: 280px;
     max-width: 85vw;
-
     transform: translateX(-100%);
     transition: transform 0.3s ease;
   }
@@ -196,29 +195,9 @@
 
   .sidebar-overlay {
     display: block;
-
     position: fixed;
     inset: 0;
-
     background: rgba(0, 0, 0, 0.5);
-
     z-index: 1099;
-  }
-}
-
-/* Small Phones */
-@media (max-width: 480px) {
-  .sidebar {
-    width: 260px;
-    padding: 16px;
-  }
-
-  .sidebar-link {
-    padding: 10px 12px;
-  }
-}
-@media (min-width: 769px) {
-  .sidebar-overlay {
-    display: none !important;
   }
 }

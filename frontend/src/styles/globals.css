@@ -20,16 +20,22 @@
 }
 
 /* ==========================================
-   ROOT — ✅ FIXED: Full viewport always
+   ROOT — ✅ FIXED: Allow natural scrolling
 ========================================== */
 
 html,
-body,
-#root {
-  height: 100%;
-  width: 100%;
+body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 html {
@@ -46,13 +52,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  overflow-y: auto;
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 
 /* ==========================================
@@ -247,11 +246,22 @@ table {
 }
 
 /* ==========================================
-   ✅ LIVE ROOM — Body lock when inside room
-   (No JS class needed — works automatically)
+   ✅ LIVE ROOM — Lock body scroll ONLY in room
 ========================================== */
 
 body:has(.dashboard-layout.room-layout) {
   overflow: hidden !important;
   height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+html:has(.dashboard-layout.room-layout) {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+#root:has(.dashboard-layout.room-layout) {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
 }

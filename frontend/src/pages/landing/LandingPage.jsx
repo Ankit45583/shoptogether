@@ -11,7 +11,6 @@ function LandingPage() {
       <FeaturesSection />
       <HowItWorksSection />
       <TestimonialsSection />
-      <CTASection />
     </>
   );
 }

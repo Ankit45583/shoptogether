@@ -14,20 +14,15 @@ function RootLayout() {
     location.pathname.startsWith("/profile");
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {!isAppPage && <Navbar />}
 
-      <main
-        style={{
-          minHeight: "100vh",
-          width: "100%",
-        }}
-      >
+      <main style={{ flex: 1, width: "100%" }}>
         <Outlet />
       </main>
 
       {!isAppPage && <Footer />}
-    </>
+    </div>
   );
 }
 

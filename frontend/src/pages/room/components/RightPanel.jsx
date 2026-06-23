@@ -556,10 +556,14 @@ function AITab({ roomId }) {
 /* ==========================================
    MAIN RIGHT PANEL
 ========================================== */
-function RightPanel({ room }) {
-  const [active, setActive] = useState("Products");
+function RightPanel({ room, defaultTab = "Products", onClose }) {
+  const [active, setActive] = useState(defaultTab);
   const { totalItems } = useCartStore();
   const roomId = room?._id;
+
+  useEffect(() => {
+    if (defaultTab) setActive(defaultTab);
+  }, [defaultTab]);
 
   const tabContent = {
     Products: <ProductsTab roomId={roomId} />,

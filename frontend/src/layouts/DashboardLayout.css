@@ -1,17 +1,15 @@
 /* ==========================================
-   DASHBOARD LAYOUT
+   VARIABLES
 ========================================== */
 
 :root {
-  --dashboard-sidebar-width: 280px;
-  --dashboard-sidebar-width-tablet: 250px;
-
-  --room-members-width: 280px;
-  --room-right-width: 260px;
-
-  --room-members-width-md: 220px;
-  --room-right-width-md: 220px;
+  --dashboard-sidebar-width: 250px;
+  --dashboard-sidebar-width-tablet: 220px;
 }
+
+/* ==========================================
+   DASHBOARD LAYOUT
+========================================== */
 
 .dashboard-layout {
   display: flex;
@@ -39,7 +37,7 @@
 }
 
 /* ==========================================
-   CONTENT CONTAINER
+   CONTENT
 ========================================== */
 
 .dashboard-content {
@@ -70,17 +68,9 @@
   margin-top: 6px;
 }
 
-/* ==========================================
-   SECTION
-========================================== */
-
 .dashboard-section {
   margin-bottom: 28px;
 }
-
-/* ==========================================
-   GRID
-========================================== */
 
 .dashboard-grid {
   display: grid;
@@ -106,10 +96,7 @@
   border-radius: 20px;
 }
 
-/* ==========================================
-   SCROLLBAR
-========================================== */
-
+/* Scrollbar */
 .dashboard-main::-webkit-scrollbar {
   width: 8px;
 }
@@ -151,55 +138,6 @@
   min-height: 0;
 }
 
-.dashboard-main.room-main .live-room {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.dashboard-main.room-main .live-room > * {
-  min-width: 0;
-  min-height: 0;
-}
-
-.dashboard-main.room-main .live-room .members-panel {
-  width: var(--room-members-width);
-  flex: 0 0 var(--room-members-width);
-}
-
-.dashboard-main.room-main .live-room .chat-panel {
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
-  height: 100%;
-  max-height: 100%;
-}
-
-.dashboard-main.room-main .live-room .right-panel {
-  width: var(--room-right-width);
-  flex: 0 0 var(--room-right-width);
-}
-
-/* ==========================================
-   LARGE TABLET / SMALL DESKTOP
-========================================== */
-
-@media (max-width: 1280px) {
-  .dashboard-main.room-main .live-room .members-panel {
-    width: var(--room-members-width-md);
-    flex-basis: var(--room-members-width-md);
-  }
-
-  .dashboard-main.room-main .live-room .right-panel {
-    width: var(--room-right-width-md);
-    flex-basis: var(--room-right-width-md);
-  }
-}
-
 /* ==========================================
    TABLET
 ========================================== */
@@ -221,17 +159,11 @@
   .dashboard-content {
     padding: 20px;
   }
-
-  /* Live room responsive fix */
-  .dashboard-main.room-main .live-room .members-panel {
-    width: var(--room-members-width-md);
-    flex-basis: var(--room-members-width-md);
-  }
-
-  .dashboard-main.room-main .live-room .right-panel {
-    display: none;
-  }
 }
+
+/* ==========================================
+   MOBILE
+========================================== */
 
 /* ==========================================
    MOBILE
@@ -239,14 +171,24 @@
 
 @media (max-width: 768px) {
   .dashboard-main {
-    width: 100%;
-    margin-left: 0;
+    width: 100% !important;
+    margin-left: 0 !important;
     padding-bottom: 80px;
   }
 
+  /* ✅ ROOM PAGE: Full screen, no padding */
   .dashboard-main.room-main {
-    width: 100%;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
     padding-bottom: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .dashboard-layout.room-layout {
+    overflow: hidden !important;
   }
 
   .dashboard-content {
@@ -265,28 +207,5 @@
   .dashboard-grid,
   .dashboard-stats {
     grid-template-columns: 1fr;
-  }
-
-  .dashboard-main.room-main .live-room .members-panel,
-  .dashboard-main.room-main .live-room .right-panel {
-    display: none;
-  }
-}
-
-/* ==========================================
-   SMALL PHONES
-========================================== */
-
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 12px;
-  }
-
-  .dashboard-title {
-    font-size: 1.25rem;
-  }
-
-  .dashboard-section {
-    margin-bottom: 20px;
   }
 }

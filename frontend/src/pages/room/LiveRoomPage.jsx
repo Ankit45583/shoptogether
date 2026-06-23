@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { BsChatDots, BsPeople, BsBag, BsRobot } from "react-icons/bs";
 import toast from "react-hot-toast";
 import MembersPanel from "./components/MembersPanel";
 import ChatPanel from "./components/ChatPanel";
@@ -17,17 +19,19 @@ function LiveRoomPage() {
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [membersOpen, setMembersOpen] = useState(false);
   const [typingUsers, setTypingUsers] = useState([]);
 
-  // ✨ NEW: AI states
+  /* ✨ NEW: Mobile tab state */
+  const [mobileTab, setMobileTab] = useState("chat"); // chat | members | shop | ai
+  const [rightPanelOpen, setRightPanelOpen] = useState(false); // tablet toggle
+
+  /* AI states */
   const [aiRecommendations, setAiRecommendations] = useState([]);
   const [aiThinking, setAiThinking] = useState(false);
 
   /* ==========================================
      LOAD ROOM + MESSAGES
   ========================================== */
-
   useEffect(() => {
     const loadRoom = async () => {
       try {
@@ -45,14 +49,12 @@ function LiveRoomPage() {
         setLoading(false);
       }
     };
-
     loadRoom();
   }, [roomId, navigate]);
 
   /* ==========================================
      SOCKET.IO
   ========================================== */
-
   useEffect(() => {
     if (!room) return;
 
@@ -63,8 +65,6 @@ function LiveRoomPage() {
     }
 
     socket.emit("room:join", { roomId });
-
-    /* ============ CHAT EVENTS ============ */
 
     socket.on("chat:new", ({ message }) => {
       setMessages((prev) => [...prev, message]);
@@ -97,8 +97,6 @@ function LiveRoomPage() {
       );
     });
 
-    /* ============ ROOM EVENTS ============ */
-
     socket.on("room:member_joined", ({ user }) => {
       toast.success(`${user.name} joined the room`);
     });
@@ -107,13 +105,9 @@ function LiveRoomPage() {
       toast(`${user.name} left the room`);
     });
 
-    /* ============ ✨ AI EVENTS ============ */
-
     socket.on("ai:recommendation", ({ recommendations }) => {
       setAiRecommendations(recommendations || []);
-      toast.success(
-        `🤖 AI generated ${recommendations?.length || 0} new recommendations!`
-      );
+      toast.success(`🤖 AI generated ${recommendations?.length || 0} recommendations!`);
     });
 
     socket.on("ai:thinking", ({ thinking }) => {
@@ -124,8 +118,6 @@ function LiveRoomPage() {
         toast.dismiss("ai-thinking");
       }
     });
-
-    /* ============ CLEANUP ============ */
 
     return () => {
       socket.off("chat:new");
@@ -144,42 +136,23 @@ function LiveRoomPage() {
   }, [room, roomId]);
 
   /* ==========================================
-     SEND MESSAGE
+     HANDLERS
   ========================================== */
-
   const handleSendMessage = (content) => {
     const socket = getSocket();
-    if (!socket) {
-      toast.error("Not connected to chat");
-      return;
-    }
-
-    socket.emit("chat:send", {
-      roomId,
-      content,
-      type: "text",
-    });
+    if (!socket) return toast.error("Not connected");
+    socket.emit("chat:send", { roomId, content, type: "text" });
   };
-
-  /* ==========================================
-     TYPING
-  ========================================== */
 
   const handleTyping = (isTyping) => {
     const socket = getSocket();
     if (!socket) return;
-
-    if (isTyping) {
-      socket.emit("chat:typing_start", { roomId });
-    } else {
-      socket.emit("chat:typing_stop", { roomId });
-    }
+    socket.emit(isTyping ? "chat:typing_start" : "chat:typing_stop", { roomId });
   };
 
   /* ==========================================
      LOADING / NOT FOUND
   ========================================== */
-
   if (loading) {
     return (
       <div className="live-room live-room--center">
@@ -199,31 +172,82 @@ function LiveRoomPage() {
   /* ==========================================
      MAIN RENDER
   ========================================== */
-
   return (
-    <div className="live-room">
-      <MembersPanel
-        room={room}
-        members={members}
-        open={membersOpen}
-        onClose={() => setMembersOpen(false)}
-      />
+    <div className="live-room" data-mobile-tab={mobileTab}>
+      {/* MEMBERS PANEL */}
+      <div className={`lr-section lr-members ${mobileTab === "members" ? "active" : ""}`}>
+        <MembersPanel room={room} members={members} />
+      </div>
 
-      <ChatPanel
-        room={room}
-        messages={messages}
-        typingUsers={typingUsers}
-        onSendMessage={handleSendMessage}
-        onTyping={handleTyping}
-        onOpenMembers={() => setMembersOpen(true)}
-        onBack={() => navigate("/dashboard")}
-      />
+      {/* CHAT PANEL */}
+      <div className={`lr-section lr-chat ${mobileTab === "chat" ? "active" : ""}`}>
+        <ChatPanel
+          room={room}
+          messages={messages}
+          typingUsers={typingUsers}
+          onSendMessage={handleSendMessage}
+          onTyping={handleTyping}
+          onOpenMembers={() => setMobileTab("members")}
+          onOpenShop={() => setRightPanelOpen(true)}
+          onBack={() => navigate("/dashboard")}
+        />
+      </div>
 
-      <RightPanel
-        room={room}
-        aiRecommendations={aiRecommendations}
-        aiThinking={aiThinking}
-      />
+      {/* RIGHT PANEL (Products/Voting/Cart/AI) */}
+      <div
+        className={`lr-section lr-right ${
+          mobileTab === "shop" || mobileTab === "ai" ? "active" : ""
+        } ${rightPanelOpen ? "tablet-open" : ""}`}
+      >
+        <RightPanel
+          room={room}
+          aiRecommendations={aiRecommendations}
+          aiThinking={aiThinking}
+          defaultTab={mobileTab === "ai" ? "AI" : "Products"}
+          onClose={() => setRightPanelOpen(false)}
+        />
+      </div>
+
+      {/* Tablet overlay */}
+      {rightPanelOpen && (
+        <div
+          className="lr-tablet-overlay"
+          onClick={() => setRightPanelOpen(false)}
+        />
+      )}
+
+      {/* ✨ MOBILE BOTTOM TABS */}
+      <div className="lr-mobile-tabs">
+        <button
+          className={`lr-tab-btn ${mobileTab === "chat" ? "active" : ""}`}
+          onClick={() => setMobileTab("chat")}
+        >
+          <BsChatDots size={20} />
+          <span>Chat</span>
+        </button>
+        <button
+          className={`lr-tab-btn ${mobileTab === "members" ? "active" : ""}`}
+          onClick={() => setMobileTab("members")}
+        >
+          <BsPeople size={20} />
+          <span>Members</span>
+          {members.length > 0 && <span className="lr-tab-badge">{members.length}</span>}
+        </button>
+        <button
+          className={`lr-tab-btn ${mobileTab === "shop" ? "active" : ""}`}
+          onClick={() => setMobileTab("shop")}
+        >
+          <BsBag size={20} />
+          <span>Shop</span>
+        </button>
+        <button
+          className={`lr-tab-btn ${mobileTab === "ai" ? "active" : ""}`}
+          onClick={() => setMobileTab("ai")}
+        >
+          <BsRobot size={20} />
+          <span>AI</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -17,25 +17,16 @@
   ========================================== */
 
   .chat-topbar {
-    height: 72px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 16px;
-
-    padding: 0 20px;
-
-    flex-shrink: 0;
-
-    background:
-      rgba(255,255,255,0.03);
-
-    backdrop-filter: blur(16px);
-
-    border-bottom:
-      1px solid rgba(255,255,255,0.08);
-  }
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
 
   .chat-room-info {
     flex: 1;
@@ -412,3 +403,182 @@
       height: 42px;
     }
   }
+  /* ==========================================
+   ✨ FLOATING REACTIONS LAYER
+========================================== */
+
+.chat-messages {
+  position: relative; /* Important for absolute floating layer */
+}
+
+.floating-reactions-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.floating-reaction {
+  position: absolute;
+  bottom: 20px;
+  font-size: 32px;
+  user-select: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  pointer-events: none;
+}
+
+/* ==========================================
+   ✨ EMOJI REACTION BAR
+========================================== */
+
+.reaction-bar {
+  display: flex;
+  gap: 4px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.reaction-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.reaction-btn {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reaction-btn:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: scale(1.15) translateY(-2px);
+}
+
+.reaction-btn:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================
+   ✨ EMOJI TRIGGER BUTTON (Active state)
+========================================== */
+
+.chat-emoji-btn {
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chat-emoji-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.1);
+}
+
+.chat-emoji-btn.active {
+  background: rgba(139, 92, 246, 0.2);
+  transform: scale(1.1);
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+
+
+/* ==========================================
+   ✨ MOBILE — CHAT PANEL FULL WIDTH FIX
+========================================== */
+
+@media (max-width: 768px) {
+  .chat-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .chat-topbar {
+    height: 56px !important;
+    padding: 0 12px 0 60px !important; /* space for hamburger */
+    flex-shrink: 0;
+  }
+
+  .chat-room-info {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .chat-room-name {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-messages {
+    padding: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .chat-input-area {
+    padding: 10px 12px !important;
+    flex-shrink: 0 !important;
+    background: rgba(15, 23, 42, 0.95);
+  }
+
+  .chat-msg {
+    max-width: 85%;
+  }
+
+  .chat-input {
+    height: 42px !important;
+    font-size: 14px;
+  }
+
+  .chat-send-btn {
+    width: 42px !important;
+    height: 42px !important;
+    flex-shrink: 0;
+  }
+
+  .chat-emoji-btn {
+    width: 38px !important;
+    height: 38px !important;
+    flex-shrink: 0;
+  }
+
+  .reaction-bar {
+    padding: 8px 12px !important;
+    flex-shrink: 0;
+  }
+
+  /* Hide the show-mobile buttons from topbar (we have bottom tabs now) */
+  .chat-topbar .show-mobile {
+    display: none !important;
+  }
+}

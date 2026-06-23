@@ -6,26 +6,30 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  padding: 20px 16px;  /* ✅ Reduce side padding */
   height: 100%;
-  max-height: 100%;
+  width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
-  position: relative;
-  z-index: 5;
+  box-sizing: border-box;
 }
-
-/* ==========================================
-   HEADER
-========================================== */
 
 .members-panel-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.members-panel-header > div {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .members-room-name {
@@ -34,30 +38,24 @@
   line-height: 1.4;
   color: var(--text-primary);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .members-room-code {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   margin-top: 4px;
   font-size: 12px;
   color: var(--text-muted);
   font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-/* ==========================================
-   DIVIDER
-========================================== */
-
 .members-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
 }
-
-/* ==========================================
-   LIST HEADER
-========================================== */
 
 .members-list-header {
   display: flex;
@@ -84,20 +82,11 @@
   padding: 0 6px;
 }
 
-/* ==========================================
-   MEMBERS LIST
-========================================== */
-
 .members-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
 }
-
-/* ==========================================
-   MEMBER ITEM
-========================================== */
 
 .member-item {
   display: flex;
@@ -111,12 +100,7 @@
 
 .member-item:hover {
   background: rgba(255, 255, 255, 0.05);
-  transform: translateX(3px);
 }
-
-/* ==========================================
-   AVATAR
-========================================== */
 
 .member-avatar {
   position: relative;
@@ -127,11 +111,21 @@
   overflow: hidden;
 }
 
-.member-avatar img {
+.member-avatar img,
+.avatar-fallback {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.avatar-fallback {
+  background: var(--accent-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
 }
 
 .member-online {
@@ -141,14 +135,9 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--online-green, #22c55e);
-  border: 2px solid var(--bg-primary, #0a0a0f);
-  z-index: 2;
+  background: #22c55e;
+  border: 2px solid var(--bg-primary);
 }
-
-/* ==========================================
-   MEMBER INFO
-========================================== */
 
 .member-info {
   flex: 1;
@@ -175,22 +164,15 @@
   text-overflow: ellipsis;
 }
 
-/* ==========================================
-   HOST BADGE
-========================================== */
-
 .member-host {
   padding: 3px 8px;
   border-radius: 999px;
   background: rgba(139, 92, 246, 0.12);
-  color: var(--accent-purple, #8b5cf6);
+  color: var(--accent-purple);
   font-size: 10px;
   font-weight: 700;
+  flex-shrink: 0;
 }
-
-/* ==========================================
-   EMPTY STATE
-========================================== */
 
 .members-empty {
   padding: 32px 16px;
@@ -200,62 +182,17 @@
 }
 
 /* ==========================================
-   OVERLAY (Mobile)
-========================================== */
-
-.members-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(4px);
-  z-index: 99;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s ease;
-}
-
-.members-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.hide-desktop {
-  display: none;
-}
-
-/* ==========================================
-   MOBILE — Drawer mode
+   MOBILE — Full screen with space for top
 ========================================== */
 
 @media (max-width: 768px) {
-  .hide-desktop {
-    display: flex;
-  }
-
   .members-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 300px;
-    height: 100vh;
-    z-index: 100;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-
-  .members-panel.open {
-    transform: translateX(0);
-  }
-}
-
-@media (max-width: 480px) {
-  .members-panel {
-    width: 280px;
-  }
-
-  .member-avatar {
-    width: 38px;
-    height: 38px;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    border-right: none !important;
+    padding-top: 70px !important;
+    transform: none !important;
   }
 }
